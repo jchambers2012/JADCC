@@ -2,7 +2,7 @@
 #define BLOWERCONTROLLER_VARIABLE_H
 
 Scheduler ts; 
-
+bool debug_gpio = false
 bool shouldSaveConfig = false;    //flag for saving data
 
 bool lcd_error = false;

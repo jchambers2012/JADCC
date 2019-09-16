@@ -14,7 +14,7 @@ void setup() {
   pinMode(RELAY_LED_RED, OUTPUT);
   pinMode(RELAY_LED_GREEN, OUTPUT);
   pinMode(GPIO_IR, OUTPUT);
-  pinMode(GPIO_START, INPUT_PULLUP);
+  pinMode(GPIO_START, INPUT);
   Wire.begin();
   Serial.begin ( 115200 );
   Serial.print ( "Blower Controller Version: " );

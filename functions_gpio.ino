@@ -65,17 +65,26 @@ void do_sensor_control(){
   int current_read = 0;
 
   //read the green button
-  current_read = digitalRead(GPIO_START);
+  gpio_button_green.current = digitalRead(GPIO_START);
+  if(gpio_button_green.current != gpio_button_green.last)
+  {
+    //the sensor has flip, set the sensor to verification mode
+    gpio_button_green.times = 0;
+    gpio_button_green.last = gpio_button_green.current;
+  }
   if(gpio_button_green.times > gpio_button_green.times_required)
   {
     //the sensor has been verified store that value as the confirmed value
     gpio_button_green.confirmed = gpio_button_green.current;
-    master_stop = false;
+    if(gpio_button_green.confirmed==true)
+    {
+      master_stop = false;
+    }
   }else{
      //sensos has not been fully verifed, increase the trust conuter
      gpio_button_green.times++;
   }
-  #ifdef BLOWERCONTROLLER_DEBUG
+  if(debug_gpio){
   Serial.print ( "Checking GPIO: N:" );
   Serial.print ( gpio_button_green.current );
   Serial.print ( " L:" );
@@ -91,8 +100,9 @@ void do_sensor_control(){
     Serial.print ( gpio_button_green.times );
     Serial.print ( ")" );
   }
-  Serial.println ( " " );
-  #endif  
+  Serial.println ( " " );    
+  }
+
   
   for (int i = 0; i <= 15; i++) {
     //Loop tho each pin on the MCP and prefrom the logic
@@ -152,7 +162,7 @@ void do_sensor_control(){
       }
   
     
-        #ifdef BLOWERCONTROLLER_DEBUG
+        if(debug_gpio){
         Serial.print ( "Checking Sensor: (" );
         Serial.print ( i );
         Serial.print ( ") -  is N:" );
@@ -175,20 +185,20 @@ void do_sensor_control(){
         }
         if(sensors[i].times < sensors[i].times_required)
         {
-          Serial.print ( " (Needs Nerifaction of " );
+          Serial.print ( " (Needs Verification of " );
           Serial.print ( sensors[i].times_required );
           Serial.print ( "  times @ " );
           Serial.print ( sensors[i].times );
           Serial.print ( ")" );
         }
           Serial.println ( " " );
-        #endif  
+        }  
     }else{
-        #ifdef BLOWERCONTROLLER_DEBUG
+        if(debug_gpio){
         Serial.print ( "Sensor: (" );
         Serial.print ( i );
         Serial.println ( ") -  is DISABLED ignoring" );
-       #endif 
+        }
     }
   }
 }
