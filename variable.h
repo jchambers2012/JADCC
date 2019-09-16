@@ -1,4 +1,3 @@
-
 #ifndef BLOWERCONTROLLER_VARIABLE_H
 #define BLOWERCONTROLLER_VARIABLE_H
 
@@ -11,7 +10,7 @@ bool lcd_error = false;
 
 byte sensors_zone_num = 3;
 typedef struct {
-  bool enable = true;
+  bool enable = true;               //Should the sensor even be checked
   char c_name[20] = "SENSOR Z#-S#"; //Name of the sensor that will be display on the LCD
   bool invert = false;              //Is this sensor inverted HIGH is LOW and LOW is HIGH
   bool turn_on = true;              //Does this sensor turn on the moton
@@ -23,18 +22,47 @@ typedef struct {
   bool last = false;                //The last read sensor from the MCP
   bool confirmed = false;           //The state that will be processed for this sesnor
   byte times = 0;                   //The numbers of time the state has been stable from the MCP to help debounce the buttons
+  byte times_required = 5;          //The numbers of time the state has to be stable
 } sensor_type;
-
 sensor_type sensors[15];
 
+typedef struct {
+  bool current = false;             //The currently read sensor from the MCP
+  bool last = false;                //The last read sensor from the MCP
+  bool confirmed = false;           //The state that will be processed for this sesnor
+  byte times = 0;                   //The numbers of time the state has been stable from the MCP to help debounce the buttons
+  byte times_required = 5;          //The numbers of time the state has to be stable
+} gpio_type;
+
+gpio_type gpio_button_green;
+
+
+bool motor_force_state = true;      //used to forcethe do_motor_control() function to set the blower state, should be set to true for first boot
+bool motor_logic_state = false;     //used by the run_blower_control() to set the blower state
+bool motor_sent_state = false;       //used by the do_motor_control() to set the blower state
+
+bool motor_ir = false;              //if the motor needs to send an IR code out to start/stop the motor
+bool motor_f2 = false;              //if the motor is controlled via Function Relay 2
+
+bool require_green = true;          //Required to press the green button an a safty stop of the motor
+bool master_stop = false;
 bool master_blower_on = false;
 bool master_blower_off = false;
-bool master_blower_error = false;
+bool master_error = false;
 bool master_f1_on = false;
 bool master_f2_on = false;
 
 const unsigned int check_sensors = 100;
 unsigned long lastSampleTime = millis();
 
-
+#define MOTOR_STOP false
+#define MOTOR_START true
+#define RELAY_F1 D5         
+#define RELAY_F2 D3
+#define RELAY_LED_RED D6
+#define RELAY_LED_GREEN D4
+#define GPIO_START D7
+#define GPIO_IR D0
+#define GPIO_B1 D8
+#define GPIO_B2 A0
 #endif /* VARIABLE_H */

@@ -1,173 +1,20 @@
 #include "include.h"
-
+;;;;;;;;;;;;;;;;;;;;
 Adafruit_MCP23017 mcp;
 
 Task t_gpioControl(3000, TASK_FOREVER, &do_sensor_control);
 
+Task t_run_blower_control(6000, TASK_FOREVER, &run_blower_control);
+
 Task t_check_MCP(30000, TASK_FOREVER, &check_MCP);
 
-
-void check_MCP(){
-   bool online = true;
-    Wire.beginTransmission(0x20);
-    switch (Wire.endTransmission()) {
-      case 0:
-        //success
-        //Serial.println ( "success 00" );
-        break;
-      case 1:
-        //data too long to fit in transmit buffer
-        //Serial.println ( "data too long to fit in transmit buffer 01" );
-        online = false;
-        break;
-      case 2:
-        //received NACK on transmit of address
-        //Serial.println ( "received NACK on transmit of address 02" );
-        online = false;
-        break;
-      case 3:
-        //received NACK on transmit of data
-        //Serial.println ( "received NACK on transmit of data 03" );
-        online = false;
-        break;
-      case 4:
-        // error
-        online = false;
-        //Serial.println ( "Error 04" );
-        break;
-      default:
-        //Unknown error
-        online = false;
-      Serial.println ( "Unknown Error" );
-    }
-    for (int i = 0; i <= 15; i++) {
-      sensors[i].chip_online = online;
-    }
-    if(online == false)
-    {
-      master_blower_error = true;
-      Serial.println ( "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" );
-      Serial.println ( "MCP23017 at 0x20 is OFFLINE" );
-      Serial.println ( "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" );
-      lcd_error = true;
-      //lcd_error[0][] = "   MCP23017 Error   ";
-      //lcd_error[1][] = "See Manual for info ";
-    }else{
-      master_blower_error = false;
-      Serial.println ( "===========================================" );
-      Serial.println ( "MCP23017 at 0x20 is ONLINE" );
-      Serial.println ( "===========================================" );
-
-    }
-    
-}
-
-void do_sensor_control(){
-  master_blower_off = false;
-  master_blower_on = false;
-  master_f1_on = false;
-  master_f2_on = false;
-  int current_read = 0;
-  for (int i = 0; i <= 15; i++) {
-    //Loop tho each pin on the MCP and prefrom the logic
-    current_read = mcp.digitalRead(i);
-    sensors[i].current = current_read;
-    //verify that the senosr has no flipped
-    if(sensors[i].current != sensors[i].last)
-    {
-      //the sensor has flip, set the sensor to verification mode
-      sensors[i].times = 0;
-      sensors[i].last = sensors[i].current;
-    }
-    
-    if(sensors[i].times > 5)
-    {
-      //the sensor has been verified store that value as the confirmed value
-      if(sensors[i].invert == true)
-      {
-        sensors[i].confirmed = !sensors[i].current;
-      }else{
-        sensors[i].confirmed = sensors[i].current;
-      }
-    }else{
-       //sensos has not been fully verifed, increase the trust conuter
-       sensors[i].times++;
-    }
-
-    //see if the sensor should be used to turn the blower on and the sensor is in a on state
-    if(sensors[i].turn_on == true && sensors[i].confirmed == true)
-    {
-      master_blower_on = true;
-    }
-    //see if the sensor should be used to turn the blower off and the sensor is in a on state
-    if(sensors[i].turn_off == true && sensors[i].confirmed == true)
-    {
-      master_blower_off = true;
-    }
-    //see if the sensor should be used to turn the Funtion 1 relay on and the sensor is in a on state
-    if(sensors[i].f1 == true && sensors[i].confirmed == true)
-    {
-      master_f1_on = true;
-    }
-    //see if the sensor should be used to turn the Funtion 2 relay on and the sensor is in a on state
-    if(sensors[i].f2 == true && sensors[i].confirmed == true)
-    {
-      master_f2_on = true;
-    }
-
-  
-#ifdef BLOWERCONTROLLER_DEBUG
-    Serial.print ( "Checking Sensor: (" );
-    Serial.print ( i );
-    Serial.print ( ") -  is N:" );
-    Serial.print ( sensors[i].current );
-    Serial.print ( " L:" );
-    Serial.print ( sensors[i].last );
-    Serial.print ( " C:" );
-    Serial.print ( sensors[i].confirmed );
-    Serial.print ( "* - '" );
-    Serial.print ( sensors[i].c_name );
-    Serial.print ( "'" );
-    if(sensors[i].invert == true)
-    {
-      Serial.print ( " (Inverted)" );
-    }
-    if(sensors[i].chip_online == false)
-    {
-      Serial.print ( " (Read Error)" );
-      master_blower_off = true;
-    }
-    if(sensors[i].times < 5)
-    {
-      Serial.print ( " (Needs Nerifaction of 5 times @ " );
-      Serial.print ( sensors[i].times );
-      Serial.print ( ")" );
-    }
-      Serial.println ( " " );
-#endif  
-  }
-    
-#ifdef BLOWERCONTROLLER_DEBUG
-    Serial.println ( "===========================================" );
-    Serial.println ( "Sensor Check Done: " );
-    Serial.print ( " - Blower Error = " );
-    Serial.println ( master_blower_error );
-    Serial.print ( " - Blower Off = " );
-    Serial.println ( master_blower_off );
-    Serial.print ( " - Blower On = " );
-    Serial.println ( master_blower_on );
-    Serial.print ( " - Blower Function 1 = " );
-    Serial.println ( master_f1_on );
-    Serial.print ( " - Blower Function 2 = " );
-    Serial.println ( master_f2_on );
-    Serial.println ( "===========================================" );
-#endif  
-}
-
-
-
 void setup() {
-
+  pinMode(RELAY_F1, OUTPUT);
+  pinMode(RELAY_F2, OUTPUT);
+  pinMode(RELAY_LED_RED, OUTPUT);
+  pinMode(RELAY_LED_GREEN, OUTPUT);
+  pinMode(GPIO_IR, OUTPUT);
+  pinMode(GPIO_START, INPUT_PULLUP);
   Wire.begin();
   Serial.begin ( 115200 );
   Serial.print ( "Blower Controller Version: " );
@@ -192,7 +39,8 @@ void setup() {
   #endif  
 
   #ifdef BLOWERCONTROLLER_DEBUG
-  Serial.println("Scheduler TEST");
+  Serial.println("++++++++++++++++++++++++++++++++++++++++");
+  Serial.println("Scheduler INIT");
   #endif  
   
   ts.init();
@@ -201,16 +49,29 @@ void setup() {
   Serial.println("Initialized scheduler");
   #endif 
 
+  //Run the hardware MCP checker
   ts.addTask(t_check_MCP);
   t_check_MCP.enable();
   #ifdef BLOWERCONTROLLER_DEBUG
-  Serial.println("added t_check_MCP");
+  Serial.println("Started t_check_MCP task");
   #endif 
 
+  //Run the GPIO control logic
   ts.addTask(t_gpioControl);
   t_gpioControl.enable();
   #ifdef BLOWERCONTROLLER_DEBUG
-  Serial.println("added t_gpioControl");
+  Serial.println("Started t_gpioControl task");
+  #endif 
+
+  //Run the blower control logic
+  ts.addTask(t_run_blower_control);
+  t_run_blower_control.enable();
+  #ifdef BLOWERCONTROLLER_DEBUG
+  Serial.println("Started t_run_blower_control task");
+  #endif 
+
+  #ifdef BLOWERCONTROLLER_DEBUG
+  Serial.println("++++++++++++++++++++++++++++++++++++++++");
   #endif 
   //clean FS, for testing
   //SPIFFS.format();
@@ -257,6 +118,17 @@ void setup() {
   //strncpy(sensors[15].c_name, "Stop Button", sizeof(sensors[15].c_name));
   sensors[15].turn_on = false;
   sensors[15].turn_off = true;
+  sensors[15].enable = true;
+  master_stop = true;  //force the system into a stop until the start button has been pressed
+
+
+  //TEST Objects
+  
+  sensors[4].enable = false;
+  sensors[13].turn_on = false;
+  sensors[13].turn_off = true;
+  sensors[13].f1 = true;
+  master_stop = false;
 }
 
 
