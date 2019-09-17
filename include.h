@@ -7,7 +7,7 @@
 #include <DNSServer.h>
 #include <WiFiManager.h>          //https://github.com/tzapu/WiFiManager
 #include <ArduinoJson.h>          //https://github.com/bblanchon/ArduinoJson
-
+#include <LiquidCrystal_I2C.h>
 #include "variable.h"
 #include "setting.h"
 #include "functions.h"

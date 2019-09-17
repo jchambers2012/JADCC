@@ -2,7 +2,7 @@
 //This funtion will control the logic on weather the blower should be on of off
 void run_blower_control(){
   //Current state of the logic flags, set by the GPIO control
-  #ifdef BLOWERCONTROLLER_DEBUG
+  if(motor_debug){
   Serial.println ( "===========================================" );
   Serial.println ( "run_blower_control()" );
   Serial.println ( "===========================================" );
@@ -25,8 +25,10 @@ void run_blower_control(){
   Serial.println ( motor_sent_state );
   Serial.print ( " - motor_force_state = " );
   Serial.println ( motor_force_state );
+  Serial.print ( " - gpio_button_green.current = " );
+  Serial.println ( gpio_button_green.current );
   Serial.println ( "===========================================" );
-  #endif  
+  } 
 
   //Check to see if the motor should be stopped
   if(master_error == true || master_stop == true || master_blower_off  == true)
@@ -83,14 +85,14 @@ void do_motor_control(bool toState)
   }
   if(motor_f2 ==true)
   {
-    //digitalWrite(RELAY_F2, toState);
-    
+      digitalWrite(RELAY_F2, toState);    
       motor_sent_state = toState;
   }
   
   Serial.println ( "===========================================" );
   Serial.println ( "do_motor_control()" );
-  Serial.println ( "I did something" );
+  Serial.print   ( "I did something set it to: " );
+  Serial.println ( toState );
   Serial.println ( "===========================================" );
   motor_sent_state = toState;
 }
