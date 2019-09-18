@@ -1,16 +1,18 @@
 #ifndef BLOWERCONTROLLER_VARIABLE_H
 #define BLOWERCONTROLLER_VARIABLE_H
 
-Scheduler ts; 
+Scheduler ts, cts; 
 bool shouldSaveConfig = false;    //flag for saving data
 
+bool lcd_debug = false;
+int lcd_d_task_time = 500;  //how offen to refresh the LDC screen
+int lcd_c_task_time = 3000;   //how offen the LCD logic is run to see what screens need to be seen based on GPIOs and Motor Logic
+byte lcd_redraw = 0;
 bool lcd_error = false;
-int lcd_d_task_time = 1000;  //how offen to refresh the LDC screen
-int lcd_c_task_time = 1000;  //how offen the LCD logic is run to see what screens need to be seen based on GPIOs and Motor Logic
+byte lcd_redraw_every = 10;
 int lcd_screen = 0;
 int lcd_screen_next = 0;
 int lcd_screen_delay = 0;
-bool lcd_debug = true;
 //char lcd_error[2][20] = "";
 
 byte sensors_zone_num = 3;
@@ -29,7 +31,7 @@ typedef struct {
   byte times = 0;                   //The numbers of time the state has been stable from the MCP to help debounce the buttons
   byte times_required = 5;          //The numbers of time the state has to be stable
 } sensor_type;
-sensor_type sensors[15];
+sensor_type sensors[16];
 
 typedef struct {
   bool current = false;             //The currently read sensor from the MCP
@@ -45,11 +47,10 @@ gpio_type gpio_button_black;
 gpio_type gpio_button_yellow;
 
 bool gpio_debug = false;
-int gpio_task_time = 100;
-//bool gpio_debug = true; int gpio_task_time = 2000;
+int gpio_task_time = 1000;
 
-bool motor_debug = false;
-int motor_task_time = 500;
+bool motor_debug = true;
+int motor_task_time = 5000;
 bool motor_force_state = true;      //used to forcethe do_motor_control() function to set the blower state, should be set to true for first boot
 bool motor_logic_state = false;     //used by the run_blower_control() to set the blower state
 bool motor_sent_state = false;       //used by the do_motor_control() to set the blower state
@@ -58,6 +59,7 @@ bool motor_ir = false;              //if the motor needs to send an IR code out 
 bool motor_f2 = false;              //if the motor is controlled via Function Relay 2
 
 int MCP_task_time = 10000;
+bool MCP_debug = true;
 
 bool require_green = true;          //Required to press the green button an a safty stop of the motor
 bool master_stop = false;

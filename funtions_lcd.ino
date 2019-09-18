@@ -1,8 +1,29 @@
 void run_lcd_control()
 {
-   if(lcd_debug){Serial.println("LCD Control: Im doing something...");}
-          lcd_screen_next = 4;
+
+  if(master_error == true)
+  {
+    //System Error - screens 500-599
+    if(lcd_screen <= 500 && lcd_screen >= 599 )
+    {
+          lcd_screen_next = 500;
           lcd_screen_delay = 0; 
+    }
+  }else if(master_stop){
+    //System in standby - screens 400-499
+    if(lcd_screen <= 400 && lcd_screen >= 499 )
+    {
+          lcd_screen_next = 400;
+          lcd_screen_delay = 0; 
+    }
+  }else if(master_blower_on == true && master_blower_off == false){
+    //Motor sensor on/running - screens 200-299
+    if(lcd_screen <= 200 && lcd_screen >= 200 )
+    {
+          lcd_screen_next = 200;
+          lcd_screen_delay = 0; 
+    }
+  }
 }
 void run_lcd_draw()
 {
@@ -46,10 +67,24 @@ void run_lcd_draw()
           if(lcd_debug){Serial.println("LCD Screen 3:bootup screens done, start logic function");}
           lcd.clear();
           lcd.print("Please wait");
+          lcd_screen_next = 4;
           t_run_lcd_control.enable();
           break;
         case 4:
           if(lcd_debug){Serial.println("LCD Screen 4:blank");}
+          lcd.clear();
+          break;
+          
+        case 200:
+          if(lcd_debug){Serial.println("LCD Screen 200:system on and running");}
+          lcd.clear();
+          break;
+        case 400:
+          if(lcd_debug){Serial.println("LCD Screen 400:System on standby Press Green");}
+          lcd.clear();
+          break;
+        case 500:
+          if(lcd_debug){Serial.println("LCD Screen 500:System Error");}
           lcd.clear();
           break;
         default:

@@ -1,4 +1,8 @@
 #include <FS.h>                   //this needs to be first, or it all crashes and burns...
+#define _TASK_SLEEP_ON_IDLE_RUN
+#define _TASK_PRIORITY
+#define _TASK_WDT_IDS
+#define _TASK_TIMECRITICAL
 #include <TaskScheduler.h>
 #include <Wire.h>
 #include "Adafruit_MCP23017.h"

@@ -28,70 +28,78 @@ void setup() {
   Serial.println ( "Created By Jason Chambers" );
   Serial.println ( "Warning - This device does not contain any Emergency Control or Fail-Safe Functions. This device should not be used as a life safety system." );
 
-#ifdef BLOWERCONTROLLER_DEBUG
+  #ifdef BLOWERCONTROLLER_DEBUG
   Serial.print ( "Zones Enabled: " );
   Serial.println ( sensors_zone_num );
-#endif
+  #endif
 
-#ifdef BLOWERCONTROLLER_DEBUG
+  #ifdef BLOWERCONTROLLER_DEBUG
   Serial.println ( "Setting up MCP23017" );
-#endif
+  #endif
   mcp.begin();      // use default address 0
   for (int i = 0; i <= 15; i++) {
     mcp.pinMode(i, INPUT);
   }
-#ifdef BLOWERCONTROLLER_DEBUG
+  #ifdef BLOWERCONTROLLER_DEBUG
   Serial.println ( "DONE Setting up MCP23017" );
-#endif
+  #endif
 
-#ifdef BLOWERCONTROLLER_DEBUG
+  #ifdef BLOWERCONTROLLER_DEBUG
   Serial.println("++++++++++++++++++++++++++++++++++++++++");
   Serial.println("Scheduler INIT");
-#endif
+  #endif
 
+
+  #ifdef BLOWERCONTROLLER_DEBUG
+  Serial.println("Initialized Critical scheduler");
+  #endif
   ts.init();
-
-#ifdef BLOWERCONTROLLER_DEBUG
-  Serial.println("Initialized scheduler");
-#endif
 
   //Run the hardware MCP checker
   ts.addTask(t_check_MCP);
   t_check_MCP.enable();
-#ifdef BLOWERCONTROLLER_DEBUG
+  #ifdef BLOWERCONTROLLER_DEBUG
   Serial.println("Started t_check_MCP task");
-#endif
-
-  //Run the hardware LCD functions checker
-  ts.addTask(t_run_lcd_draw);
-  t_run_lcd_draw.enable();
-#ifdef BLOWERCONTROLLER_DEBUG
-  Serial.println("Started t_run_lcd_draw task");
-#endif
-
-  //Run the hardware LCD functions checker
-  ts.addTask(t_run_lcd_control);
-#ifdef BLOWERCONTROLLER_DEBUG
-  Serial.println("Started t_run_lcd_control task");
-#endif
+  #endif
 
   //Run the GPIO control logic
   ts.addTask(t_gpioControl);
   t_gpioControl.enable();
-#ifdef BLOWERCONTROLLER_DEBUG
+  #ifdef BLOWERCONTROLLER_DEBUG
   Serial.println("Started t_gpioControl task");
-#endif
+  #endif
 
   //Run the blower control logic
   ts.addTask(t_run_blower_control);
   t_run_blower_control.enable();
-#ifdef BLOWERCONTROLLER_DEBUG
+  #ifdef BLOWERCONTROLLER_DEBUG
   Serial.println("Started t_run_blower_control task");
-#endif
+  #endif
 
-#ifdef BLOWERCONTROLLER_DEBUG
+   
+  #ifdef BLOWERCONTROLLER_DEBUG
+  Serial.println("Initialized normal scheduler");
+  #endif
+  //ts.init();
+  //ts.setHighPriorityScheduler(&cts);
+
+  
+  //Run the hardware LCD functions checker
+  ts.addTask(t_run_lcd_draw);
+  t_run_lcd_draw.enable();
+  #ifdef BLOWERCONTROLLER_DEBUG
+  Serial.println("Started t_run_lcd_draw task");
+  #endif
+
+  //Run the hardware LCD functions checker
+  ts.addTask(t_run_lcd_control);
+  #ifdef BLOWERCONTROLLER_DEBUG
+  Serial.println("Started t_run_lcd_control task");
+  #endif
+
+  #ifdef BLOWERCONTROLLER_DEBUG
   Serial.println("++++++++++++++++++++++++++++++++++++++++");
-#endif
+  #endif
   //clean FS, for testing
   //SPIFFS.format();
 
@@ -138,6 +146,7 @@ void setup() {
   sensors[15].turn_on = false;
   sensors[15].turn_off = true;
   sensors[15].enable = true;
+  //sensors[15].invert = false;
   master_stop = true;  //force the system into a stop until the start button has been pressed
 
 

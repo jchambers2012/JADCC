@@ -6,32 +6,32 @@ void check_MCP(){
     switch (Wire.endTransmission()) {
       case 0:
         //success
-        //Serial.println ( "success 00" );
+        if(MCP_debug){Serial.println ( "success 00" );}
         break;
       case 1:
         //data too long to fit in transmit buffer
-        //Serial.println ( "data too long to fit in transmit buffer 01" );
+        if(MCP_debug){Serial.println ( "data too long to fit in transmit buffer 01" );}
         online = false;
         break;
       case 2:
         //received NACK on transmit of address
-        //Serial.println ( "received NACK on transmit of address 02" );
+        if(MCP_debug){Serial.println ( "received NACK on transmit of address 02" );}
         online = false;
         break;
       case 3:
         //received NACK on transmit of data
-        //Serial.println ( "received NACK on transmit of data 03" );
+        if(MCP_debug){Serial.println ( "received NACK on transmit of data 03" );}
         online = false;
         break;
       case 4:
         // error
         online = false;
-        //Serial.println ( "Error 04" );
+        if(MCP_debug){Serial.println ( "Error 04" );}
         break;
       default:
         //Unknown error
         online = false;
-      Serial.println ( "Unknown Error" );
+        if(MCP_debug){Serial.println ( "Unknown Error" );}
     }
     for (int i = 0; i <= 15; i++) {
       sensors[i].chip_online = online;
@@ -39,7 +39,7 @@ void check_MCP(){
     if(online == false)
     {
       master_error = true;
-      if(gpio_debug){
+      if(MCP_debug){
       Serial.println ( "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" );
       Serial.println ( "MCP23017 at 0x20 is OFFLINE" );
       Serial.println ( "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" );
@@ -49,7 +49,7 @@ void check_MCP(){
       //lcd_error[1][] = "See Manual for info ";
     }else{
       master_error = false;
-      if(gpio_debug){
+      if(MCP_debug){
       Serial.println ( "===========================================" );
       Serial.println ( "MCP23017 at 0x20 is ONLINE" );
       Serial.println ( "===========================================" );

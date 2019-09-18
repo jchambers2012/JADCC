@@ -38,9 +38,9 @@ void run_blower_control(){
     if(motor_logic_state != motor_sent_state || motor_force_state == true )
     {
       //motor state mismatch, run the motor control function 
-      Serial.println ( "===========================================" );
-      Serial.println ( "Setting Motot to stop" );
-      Serial.println ( "===========================================" );
+      Serial.println ( "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" );
+      Serial.println ( "Setting Motot to STOP" );
+      Serial.println ( "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" );
       do_motor_control(MOTOR_STOP);
     }
   }else if(master_blower_on == false && motor_sent_state == MOTOR_START)
@@ -49,9 +49,9 @@ void run_blower_control(){
     if(motor_logic_state != motor_sent_state || motor_force_state == true)
     {
       //motor state mismatch, run the motor control function 
-      Serial.println ( "===========================================" );
-      Serial.println ( "Setting Motot to started" );
-      Serial.println ( "===========================================" );
+      Serial.println ( "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" );
+      Serial.println ( "Setting Motot to STOP" );
+      Serial.println ( "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" );
       do_motor_control(MOTOR_STOP);
     }
   }else if(master_blower_on == true)
@@ -60,9 +60,9 @@ void run_blower_control(){
     if(motor_logic_state != motor_sent_state || motor_force_state == true)
     {
       //motor state mismatch, run the motor control function 
-      Serial.println ( "===========================================" );
+      Serial.println ( "+++++++++++++++++++++++++++++++++++++++++++" );
       Serial.println ( "Setting Motot to started" );
-      Serial.println ( "===========================================" );
+      Serial.println ( "+++++++++++++++++++++++++++++++++++++++++++" );
       do_motor_control(MOTOR_START);
     }
   }
