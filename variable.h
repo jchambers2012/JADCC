@@ -5,8 +5,8 @@ Scheduler ts, cts;
 bool shouldSaveConfig = false;    //flag for saving data
 
 bool lcd_debug = false;
-int lcd_d_task_time = 500;  //how offen to refresh the LDC screen
-int lcd_c_task_time = 3000;   //how offen the LCD logic is run to see what screens need to be seen based on GPIOs and Motor Logic
+int lcd_d_task_time = 1000;  //how offen to refresh the LDC screen
+int lcd_c_task_time = 250;   //how offen the LCD logic is run to see what screens need to be seen based on GPIOs and Motor Logic
 byte lcd_redraw = 0;
 bool lcd_error = false;
 byte lcd_redraw_every = 10;
@@ -47,10 +47,10 @@ gpio_type gpio_button_black;
 gpio_type gpio_button_yellow;
 
 bool gpio_debug = false;
-int gpio_task_time = 1000;
+int gpio_task_time = 100;
 
-bool motor_debug = true;
-int motor_task_time = 5000;
+bool motor_debug = false;
+int motor_task_time = 500;
 bool motor_force_state = true;      //used to forcethe do_motor_control() function to set the blower state, should be set to true for first boot
 bool motor_logic_state = false;     //used by the run_blower_control() to set the blower state
 bool motor_sent_state = false;       //used by the do_motor_control() to set the blower state
@@ -59,7 +59,7 @@ bool motor_ir = false;              //if the motor needs to send an IR code out 
 bool motor_f2 = false;              //if the motor is controlled via Function Relay 2
 
 int MCP_task_time = 10000;
-bool MCP_debug = true;
+bool MCP_debug = false;
 
 bool require_green = true;          //Required to press the green button an a safty stop of the motor
 bool master_stop = false;

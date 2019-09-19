@@ -39,11 +39,9 @@ void check_MCP(){
     if(online == false)
     {
       master_error = true;
-      if(MCP_debug){
       Serial.println ( "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" );
-      Serial.println ( "MCP23017 at 0x20 is OFFLINE" );
+      Serial.println ( "MCP23017 at Address 0x20 is OFFLINE" );
       Serial.println ( "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" );
-      }
       lcd_error = true;
       //lcd_error[0][] = "   MCP23017 Error   ";
       //lcd_error[1][] = "See Manual for info ";
@@ -51,7 +49,7 @@ void check_MCP(){
       master_error = false;
       if(MCP_debug){
       Serial.println ( "===========================================" );
-      Serial.println ( "MCP23017 at 0x20 is ONLINE" );
+      Serial.println ( "MCP23017 at Address 0x20 is ONLINE" );
       Serial.println ( "===========================================" );
       }
 

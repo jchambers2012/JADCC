@@ -16,12 +16,21 @@ Task t_run_lcd_draw(lcd_d_task_time, TASK_FOREVER, &run_lcd_draw);
 
 void setup() {
   pinMode(RELAY_F1, OUTPUT);
+  digitalWrite(RELAY_F1, false);  
   pinMode(RELAY_F2, OUTPUT);
+  digitalWrite(RELAY_F2, false);  
   pinMode(RELAY_LED_RED, OUTPUT);
+  digitalWrite(RELAY_LED_RED, false);  
   pinMode(RELAY_LED_GREEN, OUTPUT);
+  digitalWrite(RELAY_LED_GREEN, false);  
   pinMode(GPIO_IR, OUTPUT);
+  digitalWrite(GPIO_IR, false);  
   pinMode(GPIO_START, INPUT_PULLUP);
   Wire.begin();
+  lcd.begin();
+  lcd.backlight();
+  lcd.home();
+  lcd.print("System Starting...");
   Serial.begin ( 115200 );
   Serial.print ( "Blower Controller Version: " );
   Serial.println ( BLOWER_VERSION );

@@ -36,8 +36,9 @@ void run_lcd_draw()
       {
         case 0:    // your hand is on the sensor
           if(lcd_debug){Serial.println("LCD Screen 0: starting the LCD screen");}
-          lcd.begin();
-          lcd.backlight();
+          //lcd.begin();
+          //lcd.backlight();
+          lcd.print("Screen 1");
           lcd_screen_next = 1;
           break;
         case 1:
@@ -47,7 +48,7 @@ void run_lcd_draw()
           lcd.setCursor(0, 1);
           lcd.print(BLOWER_VERSION);
           lcd_screen_next = 2;
-          lcd_screen_delay = 5;
+          lcd_screen_delay = 10;
         case 2:
           if(lcd_debug){Serial.println("LCD Screen 2: safty info");}
           //lcd.createChar(1, {  B11111,  B11111,  B01110,  B01110,  B01110,  B00100,  B00000,  B00100});
@@ -56,12 +57,12 @@ void run_lcd_draw()
           lcd.print("Please read the   ");
           lcd.setCursor(0, 1);
           lcd.write(1);
-          lcd.print("manual for safty  ");
+          lcd.print("manual for safety ");
           lcd.setCursor(0, 2);
           lcd.write(1);
           lcd.print("information       ");
           lcd_screen_next = 3;
-          lcd_screen_delay = 5;
+          lcd_screen_delay = 10;
           break;
         case 3:
           if(lcd_debug){Serial.println("LCD Screen 3:bootup screens done, start logic function");}
@@ -73,19 +74,30 @@ void run_lcd_draw()
         case 4:
           if(lcd_debug){Serial.println("LCD Screen 4:blank");}
           lcd.clear();
+          //lcd.write(1);
+          lcd.print("! Please read the   ");
+          lcd.setCursor(0, 1);
+          //lcd.write(1);
+          lcd.print("! manual for safety ");
+          lcd.setCursor(0, 2);
+          //lcd.write(1);
+          lcd.print("! information       ");
           break;
           
         case 200:
           if(lcd_debug){Serial.println("LCD Screen 200:system on and running");}
           lcd.clear();
+          lcd.print("Screen 200");
           break;
         case 400:
           if(lcd_debug){Serial.println("LCD Screen 400:System on standby Press Green");}
           lcd.clear();
+          lcd.print("Screen 400");
           break;
         case 500:
           if(lcd_debug){Serial.println("LCD Screen 500:System Error");}
           lcd.clear();
+          lcd.print("Screen 500");
           break;
         default:
           lcd_screen = 0;
