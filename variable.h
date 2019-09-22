@@ -4,13 +4,20 @@
 Scheduler ts, cts; 
 bool shouldSaveConfig = false;    //flag for saving data
 
+bool debug_debug = true;
+
+
 bool lcd_debug = false;
 int lcd_d_task_time = 1000;  //how offen to refresh the LDC screen
 int lcd_c_task_time = 250;   //how offen the LCD logic is run to see what screens need to be seen based on GPIOs and Motor Logic
-byte lcd_redraw = 0;
+#define LCD_REDRAW_TIMES 20
+byte lcd_redraw = LCD_REDRAW_TIMES;
 bool lcd_error = false;
 byte lcd_redraw_every = 10;
 int lcd_screen = 0;
+int lcd_last_sensor_a = 0;
+int lcd_last_sensor_b = 0;
+byte lcd_last_sensor_flag = 0;
 int lcd_screen_next = 0;
 int lcd_screen_delay = 0;
 //char lcd_error[2][20] = "";
@@ -29,7 +36,7 @@ typedef struct {
   bool last = false;                //The last read sensor from the MCP
   bool confirmed = false;           //The state that will be processed for this sesnor
   byte times = 0;                   //The numbers of time the state has been stable from the MCP to help debounce the buttons
-  byte times_required = 5;          //The numbers of time the state has to be stable
+  byte times_required = 2;          //The numbers of time the state has to be stable
 } sensor_type;
 sensor_type sensors[16];
 
@@ -38,7 +45,7 @@ typedef struct {
   bool last = false;                //The last read sensor from the MCP
   bool confirmed = false;           //The state that will be processed for this sesnor
   byte times = 0;                   //The numbers of time the state has been stable from the MCP to help debounce the buttons
-  byte times_required = 5;          //The numbers of time the state has to be stable
+  byte times_required = 3;          //The numbers of time the state has to be stable
 } gpio_type;
 
 gpio_type gpio_button_green;
@@ -47,7 +54,7 @@ gpio_type gpio_button_black;
 gpio_type gpio_button_yellow;
 
 bool gpio_debug = false;
-int gpio_task_time = 100;
+int gpio_task_time = 50;
 
 bool motor_debug = false;
 int motor_task_time = 500;
@@ -60,6 +67,7 @@ bool motor_f2 = false;              //if the motor is controlled via Function Re
 
 int MCP_task_time = 10000;
 bool MCP_debug = false;
+bool MCP_online_20 = false;
 
 bool require_green = true;          //Required to press the green button an a safty stop of the motor
 bool master_stop = false;

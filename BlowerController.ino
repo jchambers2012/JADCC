@@ -14,6 +14,9 @@ Task t_run_lcd_control(lcd_c_task_time, TASK_FOREVER, &run_lcd_control);
 
 Task t_run_lcd_draw(lcd_d_task_time, TASK_FOREVER, &run_lcd_draw);
 
+Task t_run_debug(5000, TASK_FOREVER, &run_debug);
+
+
 void setup() {
   pinMode(RELAY_F1, OUTPUT);
   digitalWrite(RELAY_F1, false);  
@@ -93,6 +96,13 @@ void setup() {
   //ts.setHighPriorityScheduler(&cts);
 
   
+  //Run the Debugger
+  ts.addTask(t_run_debug);
+  t_run_debug.enable();
+  #ifdef BLOWERCONTROLLER_DEBUG
+  Serial.println("Started t_run_lcd_draw task");
+  #endif
+
   //Run the hardware LCD functions checker
   ts.addTask(t_run_lcd_draw);
   t_run_lcd_draw.enable();
@@ -157,6 +167,22 @@ void setup() {
   sensors[15].enable = true;
   //sensors[15].invert = false;
   master_stop = true;  //force the system into a stop until the start button has been pressed
+  
+  sensors[0].c_name[8]='1';sensors[0].c_name[11]='1';
+  sensors[1].c_name[8]='1';sensors[1].c_name[11]='2';
+  sensors[2].c_name[8]='1';sensors[2].c_name[11]='3';
+  sensors[3].c_name[8]='1';sensors[3].c_name[11]='4';
+  sensors[4].c_name[8]='1';sensors[4].c_name[11]='5';
+  sensors[5].c_name[8]='2';sensors[5].c_name[11]='1';
+  sensors[6].c_name[8]='2';sensors[6].c_name[11]='2';
+  sensors[7].c_name[8]='2';sensors[7].c_name[11]='3';
+  sensors[8].c_name[8]='2';sensors[8].c_name[11]='4';
+  sensors[9].c_name[8]='2';sensors[9].c_name[11]='5';
+  sensors[10].c_name[8]='3';sensors[10].c_name[11]='1';
+  sensors[11].c_name[8]='3';sensors[11].c_name[11]='2';
+  sensors[12].c_name[8]='3';sensors[12].c_name[11]='3';
+  sensors[13].c_name[8]='3';sensors[13].c_name[11]='4';
+  sensors[14].c_name[8]='3';sensors[14].c_name[11]='5';
 
 
   //TEST Objects
@@ -165,7 +191,7 @@ void setup() {
   sensors[13].turn_on = false;
   sensors[13].turn_off = true;
   sensors[13].f1 = true;
-  master_stop = false;
+  //master_stop = false;
 }
 
 

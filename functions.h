@@ -10,4 +10,5 @@ void read_button_green();
 void read_button_black();
 void read_button_blue();
 void read_button_yellow();
+void run_debug();
 #endif /* functions.h */
