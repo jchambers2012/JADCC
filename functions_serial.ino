@@ -36,6 +36,8 @@ void run_debug(){
     Serial.println ( lcd_screen_delay );
     Serial.print ( " - lcd_redraw = " );
     Serial.println ( lcd_redraw );
+    Serial.print ( " - lcd_last_sensor_flag_b = " );
+    Serial.println ( lcd_last_sensor_flag_b );
     Serial.println ( "===========================================" );
     
   

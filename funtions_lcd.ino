@@ -22,7 +22,7 @@ void run_lcd_control()
     }
   }else if(master_blower_on == true && master_blower_off == false){
     //Motor sensor on/running - screens 200-299
-    if(lcd_screen <= 200 || lcd_screen >= 249 )
+    if(lcd_screen < 200 || lcd_screen > 249 )
     {
           lcd_screen_next = 200;
           lcd_screen_delay = 0; 
@@ -100,60 +100,73 @@ void run_lcd_draw()
             break;
             
           case 200:
-            if(lcd_debug){Serial.println("LCD Screen 200:system on and running");}
-            lcd.clear();
-            lcd.setCursor(0, 0);
-            lcd.print(">>>>Motor Online<<<<");
-            lcd.setCursor(0, 1);
-            lcd.print("Sensor(s) Active:");
-            //int lcd_last_sensor_a = 0;
-            //int lcd_last_sensor_b = 0;
-            //int lcd_last_sensor_flag = 0;
-            lcd_last_sensor_flag=0;
-            for (int i = 0; i <= 14; i++) {
-              if(sensors[i].enable == true && sensors[i].confirmed == true)
-              {
-                if(lcd_last_sensor_flag==0)
-                {
-                  lcd.setCursor(0, 2);
-                  lcd.print(sensors[i].c_name);
-                  lcd_last_sensor_flag=1;
-                  lcd_last_sensor_a = i;
-                }else if(lcd_last_sensor_flag==1){
-                  lcd.setCursor(0, 3);
-                  lcd.print(sensors[i].c_name);
-                  lcd_last_sensor_flag=2;
-                  lcd_last_sensor_b = i;
-                  break;
-                }
-                if(lcd_debug){
-                  Serial.print("name = ");
-                  Serial.println(sensors[i].c_name);
-                  Serial.print("lcd_last_sensor_flag = ");
-                  Serial.println(lcd_last_sensor_flag);
-                  Serial.print("lcd_last_sensor_a = ");
-                  Serial.println(lcd_last_sensor_a);
-                  Serial.print("lcd_last_sensor_b = ");
-                  Serial.println(lcd_last_sensor_b);
-                  }
-              }
-            }
-            lcd_screen_next = 201;
-            lcd_screen_delay = 5; 
-            break;
           case 201:
-            if(lcd_debug){Serial.println("LCD Screen 200:system on and running");}
-            lcd.clear();
-            lcd.setCursor(0, 0);
-            lcd.print(">>>>Motor Online<<<<");
-            lcd.setCursor(0, 1);
-            lcd.print("");
-            lcd.setCursor(0, 2);
-            lcd.print(" ");
-            lcd.setCursor(0, 3);
-            lcd.print("Press Red to disable");
-            lcd_screen_next = 200;
-            lcd_screen_delay = 5; 
+          case 202:
+          case 203:
+            if(lcd_debug){Serial.println("LCD Screen 200/201:system on and running");}
+            if(lcd_screen_next==201)
+            {
+              lcd.setCursor(0, 0);
+              lcd.print(">   Motor Online   <");
+              //lcd_last_sensor_flag_b = false;
+              lcd_screen_next = 202;
+              lcd_redraw = LCD_REDRAW_TIMES;
+            }else if(lcd_screen_next==202)
+            {
+              lcd.setCursor(0, 0);
+              lcd.print(" >  Motor Online  < ");
+              //lcd_last_sensor_flag_b = false;
+              lcd_screen_next = 203;
+              lcd_redraw = LCD_REDRAW_TIMES;
+            }else if(lcd_screen_next==203)
+            {
+              lcd.setCursor(0, 0);
+              lcd.print("  > Motor Online <  ");
+              //lcd_last_sensor_flag_b = false;
+              lcd_screen_next = 200;
+              lcd_redraw = LCD_REDRAW_TIMES;
+            }else{
+              lcd.clear();
+              lcd.setCursor(0, 0);
+              lcd.print("   >Motor Online<   ");
+              //lcd_last_sensor_flag_b = true;
+              lcd_screen_next = 201;
+              lcd_redraw = LCD_REDRAW_TIMES;
+              lcd.setCursor(0, 1);
+              lcd.print("Sensor(s) Active:");
+              
+              lcd_last_sensor_flag_a=0;
+              for (int i = 0; i <= 14; i++) {
+                if(sensors[i].enable == true && sensors[i].confirmed == true)
+                {
+                  if(lcd_last_sensor_flag_a==0)
+                  {
+                    lcd.setCursor(0, 2);
+                    lcd.print(sensors[i].c_name);
+                    lcd_last_sensor_flag_a=1;
+                    lcd_last_sensor_a = i;
+                  }else if(lcd_last_sensor_flag_a==1){
+                    lcd.setCursor(0, 3);
+                    lcd.print(sensors[i].c_name);
+                    lcd_last_sensor_flag_a=2;
+                    lcd_last_sensor_b = i;
+                    break;
+                  }
+                  if(lcd_debug){
+                    Serial.print("name = ");
+                    Serial.println(sensors[i].c_name);
+                    Serial.print("lcd_last_sensor_flag_a = ");
+                    Serial.println(lcd_last_sensor_flag_a);
+                    Serial.print("lcd_last_sensor_flag_b = ");
+                    Serial.println(lcd_last_sensor_flag_b);
+                    Serial.print("lcd_last_sensor_a = ");
+                    Serial.println(lcd_last_sensor_a);
+                    Serial.print("lcd_last_sensor_b = ");
+                    Serial.println(lcd_last_sensor_b);
+                    }
+                }
+              }
+            } 
             break;
           case 250:
             if(lcd_debug){Serial.println("LCD Screen 250:system in standby");}
