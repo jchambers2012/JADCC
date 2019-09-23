@@ -7,7 +7,7 @@ https://hackaday.io/project/167479-just-another-dust-collector-controller
 
 Read the Safety Wiki page for more information [here](https://github.com/jchambers2012/JADCC/wiki/Safety-Information)
 
-A dust collection system is an air quality improvement system used in industrial, commercial, and home production shops to improve breathable air quality and safety by removing particulate matter from the air and environment. Dust collection systems work on the basic formula of capture, convey and collect. See more here: [https://en.wikipedia.org/wiki/Dust_collection_system](Wikipedia)
+A dust collection system is an air quality improvement system used in industrial, commercial, and home production shops to improve breathable air quality and safety by removing particulate matter from the air and environment. Dust collection systems work on the basic formula of capture, convey and collect. See more here: [Wikipedia](https://en.wikipedia.org/wiki/Dust_collection_system)
 
 This system will be able to monitor 15+ switches that will be installed on the dust air flow control door or via a non-invasive current sensor. When the door is in the open position or when the tool is powered on, the system will sent a IR signal or relay loop will turn on to tell Dust Collector controller to turn on the system. When all doors are closed or the stop button is pressed; the system will send a stop signal to the controller.
 
