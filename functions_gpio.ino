@@ -38,16 +38,14 @@ void check_MCP(){
     }
     if(online == false)
     {
-      master_error = true;
+	  //I2C bus error, set the system to disable and lockout the system.
       Serial.println ( "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" );
       Serial.println ( "MCP23017 at Address 0x20 is OFFLINE" );
       Serial.println ( "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" );
+      master_error = true;
       lcd_error = true;
       MCP_online_20=false;
-      //lcd_error[0][] = "   MCP23017 Error   ";
-      //lcd_error[1][] = "See Manual for info ";
     }else{
-      master_error = false;
       MCP_online_20=true;
       if(MCP_debug){
       Serial.println ( "===========================================" );
@@ -56,30 +54,118 @@ void check_MCP(){
       }
 
     }
+	//This board is a daul control board model
+	#if defined(BLOWER_CONTROL_BOARDS) && BLOWER_CONTROL_BOARDS >= 2
+	if(MCP_enabled_21==true)
+	{
+	//Dual controller board is enabled
+    Wire.beginTransmission(0x21);
+    switch (Wire.endTransmission()) {
+      case 0:
+        //success
+        if(MCP_debug){Serial.println ( "success 00" );}
+        break;
+      case 1:
+        //data too long to fit in transmit buffer
+        if(MCP_debug){Serial.println ( "data too long to fit in transmit buffer 01" );}
+        online = false;
+        break;
+      case 2:
+        //received NACK on transmit of address
+        if(MCP_debug){Serial.println ( "received NACK on transmit of address 02" );}
+        online = false;
+        break;
+      case 3:
+        //received NACK on transmit of data
+        if(MCP_debug){Serial.println ( "received NACK on transmit of data 03" );}
+        online = false;
+        break;
+      case 4:
+        // error
+        online = false;
+        if(MCP_debug){Serial.println ( "Error 04" );}
+        break;
+      default:
+        //Unknown error
+        online = false;
+        if(MCP_debug){Serial.println ( "Unknown Error" );}
+    }
+    for (int i = 16; i <= 31; i++) {
+      sensors[i].chip_online = online;
+    }
+    if(online == false)
+    {
+	  //I2C bus error, set the system to disable and lockout the system.
+      Serial.println ( "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" );
+      Serial.println ( "MCP23017 at Address 0x21 is OFFLINE" );
+      Serial.println ( "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" );
+      master_error = true;
+      lcd_error = true;
+      MCP_online_21=false;
+    }else{
+      MCP_online_21=true;
+      if(MCP_debug){
+      Serial.println ( "===========================================" );
+      Serial.println ( "MCP23017 at Address 0x21 is ONLINE" );
+      Serial.println ( "===========================================" );
+      }
+
+    }
+	}
+	#endif
     
 }
 //This function will check each sensor of the MCP and decide is the system should turn
-// the blower on/off, funtion relays should be on/or and prefrom some debouncing 
+// the blower on/off, function relays should be on/or and preform some debouncing 
 void do_sensor_control(){
   master_blower_off = false;
   master_blower_on = false;
   master_f1_on = false;
   master_f2_on = false;
-  int current_read = 0;
   
   read_button_green();
   read_button_black();
   read_button_blue();
   read_button_yellow();
   
-  for (int i = 0; i <= 15; i++) {
-    //Loop tho each pin on the MCP and prefrom the logic
+  //Read MCP at address 0x20
+  for (int i = 0; i <= gpio_max_read; i++) {
+    //Loop tho each pin on the MCP and preform the logic
     if(sensors[i].enable == true)
     {
+	  //Controller is setup for dual control boards, must check them all based on gpio_max_read!
+	  #if defined(BLOWER_CONTROL_BOARDS) && BLOWER_CONTROL_BOARDS >= 2
       //Sensor is enabled let see what it is doing
-      current_read = mcp.digitalRead(i);
-      sensors[i].current = current_read;
-      //verify that the senosr has no flipped
+	  if( i <=15)
+	  {
+        sensors[i].current = mcp_20.digitalRead(i);
+	  }else if(i >=16  && i <=31)
+	  {
+        sensors[i].current = mcp_21.digitalRead(i-16);
+	  }else if(i >=32  && i <=47)
+	  {
+		//is the system is setup for 3 control boards
+		#if defined(BLOWER_CONTROL_BOARDS) && BLOWER_CONTROL_BOARDS >= 3
+        sensors[i].current = mcp_22.digitalRead(i-32);
+	    #else
+		  sensors[i].current = false;
+        #endif
+	  }else if(i >=48  && i <=63)
+	  {
+		//is the system is setup for 4 control boards
+		#if defined(BLOWER_CONTROL_BOARDS) && BLOWER_CONTROL_BOARDS >= 4
+        sensors[i].current = mcp_22.digitalRead(i-48);
+	    #else
+		  sensors[i].current = false;
+        #endif
+	  }else {
+		  sensors[i].current = false;
+      }
+	  #else
+	    //Controller is setup for single control board
+        sensors[i].current = mcp_20.digitalRead(i);
+      #endif
+      //verify that the sensor has not flipped
       if(sensors[i].current != sensors[i].last)
       {
         //the sensor has flip, set the sensor to verification mode
@@ -87,7 +173,7 @@ void do_sensor_control(){
         sensors[i].last = sensors[i].current;
       }
       
-      if(sensors[i].times > sensors[i].times_required)
+      if(sensors[i].times >= sensors[i].times_required)
       {
         //the sensor has been verified store that value as the confirmed value
         if(sensors[i].invert == true)
@@ -97,7 +183,7 @@ void do_sensor_control(){
           sensors[i].confirmed = sensors[i].current;
         }
       }else{
-         //sensos has not been fully verifed, increase the trust conuter
+         //sensors has not been fully verified, increase the trust counter
          sensors[i].times++;
       }
   
@@ -118,12 +204,12 @@ void do_sensor_control(){
           master_stop = true;
         }
       }
-      //see if the sensor should be used to turn the Funtion 1 relay on and the sensor is in a on state
+      //see if the sensor should be used to turn the Function 1 relay on and the sensor is in a on state
       if(sensors[i].f1 == true && sensors[i].confirmed == true)
       {
         master_f1_on = true;
       }
-      //see if the sensor should be used to turn the Funtion 2 relay on and the sensor is in a on state
+      //see if the sensor should be used to turn the Function 2 relay on and the sensor is in a on state
       if(sensors[i].f2 == true && sensors[i].confirmed == true)
       {
         master_f2_on = true;

@@ -23,7 +23,7 @@ int lcd_screen_next = 0;
 int lcd_screen_delay = 0;
 //char lcd_error[2][20] = "";
 
-byte sensors_zone_num = 3;
+
 typedef struct {
   bool enable = true;               //Should the sensor even be checked
   char c_name[20] = "SENSOR Z#-S#"; //Name of the sensor that will be display on the LCD
@@ -39,8 +39,14 @@ typedef struct {
   byte times = 0;                   //The numbers of time the state has been stable from the MCP to help debounce the buttons
   byte times_required = 2;          //The numbers of time the state has to be stable
 } sensor_type;
-sensor_type sensors[16];
-
+#if defined(BLOWER_CONTROL_BOARDS) && BLOWER_CONTROL_BOARDS >= 2
+  sensor_type sensors[32]; // Two control board in use
+  byte sensors_zone_num = 6;
+#else
+  sensor_type sensors[16]; // Only one control board in use
+  byte sensors_zone_num = 3;
+#endif
+byte gpio_max_read = 15    // MAX number of indexes the sensor GPIO function should read.  Must be 15, 31, etc.
 typedef struct {
   bool current = false;             //The currently read sensor from the MCP
   bool last = false;                //The last read sensor from the MCP
@@ -69,6 +75,10 @@ bool motor_f2 = false;              //if the motor is controlled via Function Re
 int MCP_task_time = 10000;
 bool MCP_debug = false;
 bool MCP_online_20 = false;
+#if defined(BLOWER_CONTROL_BOARDS) && BLOWER_CONTROL_BOARDS == 2
+  bool MCP_online_21 = false;
+  bool MCP_enabled_21 = false;
+#endif
 
 bool require_green = true;          //Required to press the green button an a safty stop of the motor
 bool master_stop = false;

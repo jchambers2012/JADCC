@@ -39,9 +39,21 @@ void run_debug(){
     Serial.print ( " - lcd_last_sensor_flag_b = " );
     Serial.println ( lcd_last_sensor_flag_b );
     Serial.println ( "===========================================" );
+    Serial.print ( " - gpio_max_read = " );
+    Serial.println ( gpio_max_read );
+    Serial.print ( " - MCP_online_20 = " );
+    Serial.println ( MCP_online_20 );
+	#if defined(BLOWER_CONTROL_BOARDS) && BLOWER_CONTROL_BOARDS >= 2
+    Serial.print ( " - MCP_online_21 = " );
+    Serial.println ( MCP_online_21 );
+    Serial.print ( " - MCP_enabled_21 = " );
+    Serial.println ( MCP_enabled_21 );
+    #endif
+	
+    Serial.println ( "===========================================" );
     
   
-    for (int i = 0; i <= 15; i++) {
+    for (int i = 0; i <= gpio_max_read; i++) {
       if(sensors[i].enable == true)
       {
           Serial.print ( "Checking Sensor: (" );
