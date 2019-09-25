@@ -1,5 +1,7 @@
 void run_lcd_control()
 {
+  lcd_c_task_time_start = millis();
+  lcd_c_task_time_ran++;
 
   if(master_error == true)
   {
@@ -13,6 +15,28 @@ void run_lcd_control()
           lcd_screen_next = 510;
           lcd_screen_delay = 0; 
     }
+    
+    #if defined(BLOWER_CONTROL_BOARDS) && BLOWER_CONTROL_BOARDS >= 2
+    if(MCP_enabled_21==true && MCP_online_21 == false)
+    {
+          lcd_screen_next = 511;
+          lcd_screen_delay = 0; 
+    }
+   #endif
+    #if defined(BLOWER_CONTROL_BOARDS) && BLOWER_CONTROL_BOARDS >= 3
+    if(MCP_enabled_22==true && MCP_online_22 == false)
+    {
+          lcd_screen_next = 512;
+          lcd_screen_delay = 0; 
+    }
+   #endif
+    #if defined(BLOWER_CONTROL_BOARDS) && BLOWER_CONTROL_BOARDS >= 4
+    if(MCP_enabled_23==true && MCP_online_23 == false)
+    {
+          lcd_screen_next = 514;
+          lcd_screen_delay = 0; 
+    }
+   #endif
   }else if(master_stop){
     //System in standby - screens 400-499
     if(lcd_screen <= 400 || lcd_screen >= 499 )
@@ -35,9 +59,12 @@ void run_lcd_control()
           lcd_screen_delay = 0; 
     }
   }
+  lcd_c_task_time_stop = millis();
 }
 void run_lcd_draw()
 {
+  lcd_d_task_time_start = millis();
+  lcd_d_task_time_ran++;
   // see if the LCD screen needs to be updated or force an update every XX times
   lcd_redraw++;
   if(lcd_screen != lcd_screen_next || lcd_redraw >= 20)
@@ -174,7 +201,7 @@ void run_lcd_draw()
             lcd.print("<<System in Standby>");
             lcd.setCursor(0, 1);
             lcd.print(" Blower Controller  ");
-            lcd.setCursor(6, 2);
+            lcd.setCursor(7, 2);
             lcd.print(BLOWER_VERSION);
             lcd.setCursor(0, 3);
             lcd.print("Press Red to disable");
@@ -185,7 +212,7 @@ void run_lcd_draw()
             lcd.print(">System is Disabled<");
             lcd.setCursor(0, 1);
             lcd.print(" Blower Controller  ");
-            lcd.setCursor(6, 2);
+            lcd.setCursor(7, 2);
             lcd.print(BLOWER_VERSION);
             lcd.setCursor(0, 3);
             lcd.print("Press Geeen to Start");
@@ -206,6 +233,39 @@ void run_lcd_draw()
             lcd.setCursor(0, 2);
             lcd.print(">>System Disabled<<");
             break;
+          case 511:
+            if(lcd_debug){Serial.println("LCD Screen 511:MCP Offlie Error ar x021");}
+            lcd.clear();
+            lcd.print(">>>>SYSTEM ERROR<<<<");
+            lcd.setCursor(0, 1);
+            lcd.print("MCP23017 is offline ");
+            lcd.setCursor(0, 2);
+            lcd.print("at address 0x21");
+            lcd.setCursor(0, 2);
+            lcd.print(">>System Disabled<<");
+            break;
+          case 512:
+            if(lcd_debug){Serial.println("LCD Screen 512:MCP Offlie Error ar x022");}
+            lcd.clear();
+            lcd.print(">>>>SYSTEM ERROR<<<<");
+            lcd.setCursor(0, 1);
+            lcd.print("MCP23017 is offline ");
+            lcd.setCursor(0, 2);
+            lcd.print("at address 0x22");
+            lcd.setCursor(0, 2);
+            lcd.print(">>System Disabled<<");
+            break;
+          case 513:
+            if(lcd_debug){Serial.println("LCD Screen 512:MCP Offlie Error ar x023");}
+            lcd.clear();
+            lcd.print(">>>>SYSTEM ERROR<<<<");
+            lcd.setCursor(0, 1);
+            lcd.print("MCP23017 is offline ");
+            lcd.setCursor(0, 2);
+            lcd.print("at address 0x23");
+            lcd.setCursor(0, 2);
+            lcd.print(">>System Disabled<<");
+            break;
           default:
             lcd_screen = 0;
             lcd_screen_next = 0;
@@ -219,4 +279,5 @@ void run_lcd_draw()
   if(lcd_debug){Serial.print("lcd_screen_next: ");Serial.println(lcd_screen_next);}
   if(lcd_debug){Serial.print("lcd_redraw: ");Serial.println(lcd_redraw);}
   if(lcd_debug){Serial.print("(lcd_screen != lcd_screen_next): ");Serial.println(lcd_screen != lcd_screen_next);}
+  lcd_d_task_time_stop = millis();
 }

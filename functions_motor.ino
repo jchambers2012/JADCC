@@ -1,6 +1,8 @@
 
 //This funtion will control the logic on weather the blower should be on of off
 void run_blower_control(){
+  motor_task_time_start = millis();
+  motor_task_time_ran++;
   //Current state of the logic flags, set by the GPIO control
   if(motor_debug){
   Serial.println ( "===========================================" );
@@ -67,6 +69,7 @@ void run_blower_control(){
     }
   }
   motor_force_state = false;
+  motor_task_time_stop = millis();
 }
 
 

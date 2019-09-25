@@ -1,8 +1,47 @@
 
 //This funtion will control the logic on weather the blower should be on of off
 void run_debug(){
+  unsigned long now = millis();
+  debug_debug_ran++;
   //Current state of the logic flags, set by the GPIO control
   if(debug_debug){
+    Serial.println ( "===========================================" );
+    Serial.println ( "Timing:" );
+    Serial.println ( "===========================================" );
+    Serial.print ( " - System LOOP() took " );
+    Serial.print ( system_loop_stop-system_loop_start );
+    Serial.println ( " ms" );
+    
+    Serial.print ( " - Last debug (this) took " );
+    Serial.print ( debug_debug_time );
+    Serial.print ( " ms called: " );
+    Serial.print ( debug_debug_ran );
+    Serial.println ( " times" );
+    
+    Serial.print ( " - Last LCD display took " );
+    Serial.print ( lcd_d_task_time_stop-lcd_d_task_time_start );
+    Serial.print ( " ms called: " );
+    Serial.print ( lcd_d_task_time_ran );
+    Serial.println ( " times" );
+    
+    Serial.print ( " - Last LCD Control took " );
+    Serial.print ( lcd_c_task_time_stop-lcd_c_task_time_start );
+    Serial.print ( " ms called: " );
+    Serial.print ( lcd_c_task_time_ran );
+    Serial.println ( " times" );
+    
+    Serial.print ( " - Last GPIO took " );
+    Serial.print ( gpio_task_time_stop-gpio_task_time_start );
+    Serial.print ( " ms called: " );
+    Serial.print ( gpio_task_time_ran );
+    Serial.println ( " times" );
+    
+    Serial.print ( " - Last Motor took " );
+    Serial.print ( motor_task_time_stop-motor_task_time_start );
+    Serial.print ( " ms called: " );
+    Serial.print ( motor_task_time_ran );
+    Serial.println ( " times" );
+    Serial.println ( "===========================================" );
     Serial.println ( "===========================================" );
     Serial.println ( "run_blower_control()" );
     Serial.println ( "===========================================" );
@@ -43,11 +82,23 @@ void run_debug(){
     Serial.println ( gpio_max_read );
     Serial.print ( " - MCP_online_20 = " );
     Serial.println ( MCP_online_20 );
-	#if defined(BLOWER_CONTROL_BOARDS) && BLOWER_CONTROL_BOARDS >= 2
+   #if defined(BLOWER_CONTROL_BOARDS) && BLOWER_CONTROL_BOARDS >= 2
     Serial.print ( " - MCP_online_21 = " );
     Serial.println ( MCP_online_21 );
     Serial.print ( " - MCP_enabled_21 = " );
     Serial.println ( MCP_enabled_21 );
+    #endif
+   #if defined(BLOWER_CONTROL_BOARDS) && BLOWER_CONTROL_BOARDS >= 3
+    Serial.print ( " - MCP_online_22 = " );
+    Serial.println ( MCP_online_22 );
+    Serial.print ( " - MCP_enabled_22 = " );
+    Serial.println ( MCP_enabled_22 );
+    #endif
+   #if defined(BLOWER_CONTROL_BOARDS) && BLOWER_CONTROL_BOARDS >= 4
+    Serial.print ( " - MCP_online_23 = " );
+    Serial.println ( MCP_online_23 );
+    Serial.print ( " - MCP_enabled_23 = " );
+    Serial.println ( MCP_enabled_23 );
     #endif
 	
     Serial.println ( "===========================================" );
@@ -56,7 +107,18 @@ void run_debug(){
     for (int i = 0; i <= gpio_max_read; i++) {
       if(sensors[i].enable == true)
       {
-          Serial.print ( "Checking Sensor: (" );
+          if(sensors[i].confirmed )
+          {
+            if(sensors[i].turn_off )
+            {
+              Serial.print ( "--" );
+            }else{
+              Serial.print ( ">>" );
+            }
+          }else{
+            Serial.print ( "  " );
+          }
+          Serial.print ( " Sensor: (" );
           Serial.print ( i );
           Serial.print ( ") -  is N:" );
           Serial.print ( sensors[i].current );
@@ -86,7 +148,7 @@ void run_debug(){
           }
             Serial.println ( " " ); 
       }else{
-          Serial.print ( "Sensor: (" );
+          Serial.print ( "  Sensor: (" );
           Serial.print ( i );
           Serial.println ( ") -  is DISABLED ignoring" );
       }
@@ -94,4 +156,5 @@ void run_debug(){
   Serial.println ( "===========================================" );
   Serial.println ( "===========================================" );
   } 
+  debug_debug_time = millis()-now;
 }

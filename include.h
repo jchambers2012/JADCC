@@ -3,6 +3,7 @@
 #define _TASK_PRIORITY
 #define _TASK_WDT_IDS
 #define _TASK_TIMECRITICAL
+#define _TASK_STD_FUNCTION
 #include <TaskScheduler.h>
 #include <Wire.h>
 #include "Adafruit_MCP23017.h"

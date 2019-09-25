@@ -5,6 +5,12 @@ Adafruit_MCP23017 mcp_20; //Zones 1-3 Sensors INDEX 0-15
 #if defined(BLOWER_CONTROL_BOARDS) && BLOWER_CONTROL_BOARDS >= 2
   Adafruit_MCP23017 mcp_21; //Zones 4-6 Sensors INDEX 16-31
 #endif
+#if defined(BLOWER_CONTROL_BOARDS) && BLOWER_CONTROL_BOARDS >= 3
+  Adafruit_MCP23017 mcp_22; //Zones 4-6 Sensors INDEX 16-31
+#endif
+#if defined(BLOWER_CONTROL_BOARDS) && BLOWER_CONTROL_BOARDS >= 4
+  Adafruit_MCP23017 mcp_23; //Zones 4-6 Sensors INDEX 16-31
+#endif
 
 LiquidCrystal_I2C lcd(0x27, 20, 4);
 
@@ -19,7 +25,6 @@ Task t_run_lcd_control(lcd_c_task_time, TASK_FOREVER, &run_lcd_control);
 Task t_run_lcd_draw(lcd_d_task_time, TASK_FOREVER, &run_lcd_draw);
 
 Task t_run_debug(5000, TASK_FOREVER, &run_debug);
-
 
 void setup() {
   pinMode(RELAY_F1, OUTPUT);
@@ -54,7 +59,7 @@ void setup() {
   #endif
   mcp_20.begin(0);      // use default address 0 (0x20)
   for (int i = 0; i <= 15; i++) {
-    mcp.pinMode(i, INPUT);
+    mcp_20.pinMode(i, INPUT);
   }
   
   #ifdef BLOWERCONTROLLER_DEBUG
@@ -202,12 +207,36 @@ void setup() {
   
   
   
-  //This controller is complied for dual controller
+  //This controller is complied for 2 controller
   #if defined(BLOWER_CONTROL_BOARDS) && BLOWER_CONTROL_BOARDS >= 2
     if(MCP_enabled_21==true)
 	{
 	  //Dual controller board is enabled
       mcp_21.begin(1);      // use default address 1 (0x21)
+      for (int i = 0; i <= 15; i++) {
+        mcp.pinMode(i, INPUT);
+      }
+	  gpio_max_read = 31;  //Incease the number of sensor that should be read by the system
+	}
+  #endif
+  //This controller is complied for 3 controller
+  #if defined(BLOWER_CONTROL_BOARDS) && BLOWER_CONTROL_BOARDS >= 3
+    if(MCP_enabled_22==true)
+	{
+	  //Dual controller board is enabled
+      mcp_22.begin(1);      // use default address 1 (0x21)
+      for (int i = 0; i <= 15; i++) {
+        mcp.pinMode(i, INPUT);
+      }
+	  gpio_max_read = 31;  //Incease the number of sensor that should be read by the system
+	}
+  #endif
+  //This controller is complied for 4 controller
+  #if defined(BLOWER_CONTROL_BOARDS) && BLOWER_CONTROL_BOARDS >= 4
+    if(MCP_enabled_23==true)
+	{
+	  //Dual controller board is enabled
+      mcp_23.begin(1);      // use default address 1 (0x21)
       for (int i = 0; i <= 15; i++) {
         mcp.pinMode(i, INPUT);
       }
@@ -243,14 +272,15 @@ void setup() {
   //TEST Objects until I can get around to getting config.json working
 
   sensors[4].enable = false;
-  sensors[13].turn_on = false;
-  sensors[13].turn_off = true;
+  //sensors[13].turn_on = false;
+  //sensors[13].turn_off = true;
   sensors[13].f1 = true;
   //master_stop = false;
 }
 
 
 void loop() {
+  system_loop_start = millis();
   ts.execute();
 
   if (shouldSaveConfig) {
@@ -271,4 +301,5 @@ void loop() {
     configFile.close();
     //end save
   }
+  system_loop_stop = millis();
 }

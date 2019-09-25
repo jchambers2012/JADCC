@@ -1,15 +1,19 @@
 #ifndef BLOWERCONTROLLER_VARIABLE_H
 #define BLOWERCONTROLLER_VARIABLE_H
 
+#define BLOWER_VERSION "0.05 BETA"
+
 Scheduler ts, cts; 
 bool shouldSaveConfig = false;    //flag for saving data
 
 bool debug_debug = true;
-
+unsigned long debug_debug_time, debug_debug_ran; //Track the time each function takes to run
+unsigned long system_loop_start,system_loop_stop; //Track the time each function takes to run
 
 bool lcd_debug = false;
 int lcd_d_task_time = 1000;  //how offen to refresh the LDC screen
 int lcd_c_task_time = 250;   //how offen the LCD logic is run to see what screens need to be seen based on GPIOs and Motor Logic
+unsigned long lcd_d_task_time_start, lcd_d_task_time_stop, lcd_d_task_time_ran, lcd_c_task_time_start, lcd_c_task_time_stop, lcd_c_task_time_ran; //Track the time each function takes to run
 #define LCD_REDRAW_TIMES 20
 byte lcd_redraw = LCD_REDRAW_TIMES;
 bool lcd_error = false;
@@ -39,14 +43,20 @@ typedef struct {
   byte times = 0;                   //The numbers of time the state has been stable from the MCP to help debounce the buttons
   byte times_required = 2;          //The numbers of time the state has to be stable
 } sensor_type;
-#if defined(BLOWER_CONTROL_BOARDS) && BLOWER_CONTROL_BOARDS >= 2
+#if defined(BLOWER_CONTROL_BOARDS) && BLOWER_CONTROL_BOARDS == 2
   sensor_type sensors[32]; // Two control board in use
   byte sensors_zone_num = 6;
+#elif defined(BLOWER_CONTROL_BOARDS) && BLOWER_CONTROL_BOARDS == 3
+  sensor_type sensors[48]; // Two control board in use
+  byte sensors_zone_num = 9;
+#elif defined(BLOWER_CONTROL_BOARDS) && BLOWER_CONTROL_BOARDS >= 4
+  sensor_type sensors[64]; // Two control board in use
+  byte sensors_zone_num = 12;
 #else
   sensor_type sensors[16]; // Only one control board in use
   byte sensors_zone_num = 3;
 #endif
-byte gpio_max_read = 15    // MAX number of indexes the sensor GPIO function should read.  Must be 15, 31, etc.
+byte gpio_max_read = 15;    // MAX number of indexes the sensor GPIO function should read.  Must be 15, 31, etc.
 typedef struct {
   bool current = false;             //The currently read sensor from the MCP
   bool last = false;                //The last read sensor from the MCP
@@ -62,9 +72,11 @@ gpio_type gpio_button_yellow;
 
 bool gpio_debug = false;
 int gpio_task_time = 50;
+unsigned long gpio_task_time_start, gpio_task_time_stop, gpio_task_time_ran; //Track the time each function takes to run
 
 bool motor_debug = false;
 int motor_task_time = 500;
+unsigned long motor_task_time_start, motor_task_time_stop, motor_task_time_ran; //Track the time each function takes to run
 bool motor_force_state = true;      //used to forcethe do_motor_control() function to set the blower state, should be set to true for first boot
 bool motor_logic_state = false;     //used by the run_blower_control() to set the blower state
 bool motor_sent_state = false;       //used by the do_motor_control() to set the blower state
@@ -73,11 +85,20 @@ bool motor_ir = false;              //if the motor needs to send an IR code out 
 bool motor_f2 = false;              //if the motor is controlled via Function Relay 2
 
 int MCP_task_time = 10000;
+unsigned long MCP_task_time_start, MCP_task_time_stop, MCP_task_time_ran; //Track the time each function takes to run
 bool MCP_debug = false;
 bool MCP_online_20 = false;
-#if defined(BLOWER_CONTROL_BOARDS) && BLOWER_CONTROL_BOARDS == 2
+#if defined(BLOWER_CONTROL_BOARDS) && BLOWER_CONTROL_BOARDS >= 2
   bool MCP_online_21 = false;
   bool MCP_enabled_21 = false;
+#endif
+#if defined(BLOWER_CONTROL_BOARDS) && BLOWER_CONTROL_BOARDS >= 3
+  bool MCP_online_22 = false;
+  bool MCP_enabled_22 = false;
+#endif
+#if defined(BLOWER_CONTROL_BOARDS) && BLOWER_CONTROL_BOARDS >= 4
+  bool MCP_online_23 = false;
+  bool MCP_enabled_23 = false;
 #endif
 
 bool require_green = true;          //Required to press the green button an a safty stop of the motor
