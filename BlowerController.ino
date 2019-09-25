@@ -24,7 +24,7 @@ Task t_run_lcd_control(lcd_c_task_time, TASK_FOREVER, &run_lcd_control);
 
 Task t_run_lcd_draw(lcd_d_task_time, TASK_FOREVER, &run_lcd_draw);
 
-Task t_run_debug(5000, TASK_FOREVER, &run_debug);
+Task t_run_debug(debug_debug_task_time, TASK_FOREVER, &run_debug);
 
 void setup() {
   pinMode(RELAY_F1, OUTPUT);
@@ -281,6 +281,7 @@ void setup() {
 
 void loop() {
   system_loop_start = millis();
+  system_loop_run++;
   ts.execute();
 
   if (shouldSaveConfig) {
@@ -301,5 +302,29 @@ void loop() {
     configFile.close();
     //end save
   }
-  system_loop_stop = millis();
+  if(system_loop_total>system_loop_max)
+  {
+    system_loop_max = system_loop_total;
+  }
+  if((lcd_d_task_time_stop-lcd_d_task_time_start)>lcd_d_task_time_max)
+  {
+    lcd_d_task_time_max = lcd_d_task_time_stop-lcd_d_task_time_start;
+  }
+  if((lcd_c_task_time_stop-lcd_c_task_time_start)>lcd_c_task_time_max)
+  {
+    lcd_c_task_time_max = lcd_c_task_time_stop-lcd_c_task_time_start;
+  }
+  if((gpio_task_time_stop-gpio_task_time_start)>gpio_task_time_max)
+  {
+    gpio_task_time_max = gpio_task_time_stop-gpio_task_time_start;
+  }
+  if((MCP_task_time_stop-MCP_task_time_start)>MCP_task_time_max)
+  {
+    MCP_task_time_max = MCP_task_time_stop-MCP_task_time_start;
+  }
+  if((motor_task_time_stop-motor_task_time_start)>MCP_task_time_max)
+  {
+    motor_task_time_max = motor_task_time_stop-motor_task_time_start;
+  } 
+  system_loop_total = millis()-system_loop_start;
 }

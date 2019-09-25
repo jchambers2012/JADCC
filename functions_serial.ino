@@ -2,46 +2,83 @@
 //This funtion will control the logic on weather the blower should be on of off
 void run_debug(){
   unsigned long now = millis();
+  unsigned long function_called = 0;
+  unsigned long function_called_total = 0;
   debug_debug_ran++;
   //Current state of the logic flags, set by the GPIO control
   if(debug_debug){
     Serial.println ( "===========================================" );
     Serial.println ( "Timing:" );
     Serial.println ( "===========================================" );
-    Serial.print ( " - System LOOP() took " );
-    Serial.print ( system_loop_stop-system_loop_start );
-    Serial.println ( " ms" );
-    
     Serial.print ( " - Last debug (this) took " );
     Serial.print ( debug_debug_time );
     Serial.print ( " ms called: " );
     Serial.print ( debug_debug_ran );
-    Serial.println ( " times" );
+    Serial.print ( " times total - " );
+    function_called = debug_debug_ran-debug_debug_times[0];
+    Serial.print ( function_called );
+    debug_debug_times[0]=debug_debug_ran; 
+    Serial.println ( " since last seen" );
+    Serial.print ( " - I run every  " );
+    Serial.print ( debug_debug_task_time);
+    Serial.println ( " ms" );
     
-    Serial.print ( " - Last LCD display took " );
-    Serial.print ( lcd_d_task_time_stop-lcd_d_task_time_start );
+    Serial.print ( " - System LOOP() MAX took " );
+    Serial.print ( system_loop_max );
+    Serial.print ( " ms - called " );
+    function_called = system_loop_run-debug_debug_times[1];
+    Serial.print ( function_called );
+    function_called_total = function_called_total+function_called;
+    debug_debug_times[1]=system_loop_run; 
+    Serial.println ( " since last seen" );
+
+    
+    Serial.print ( " - Last LCD display takes " );
+    Serial.print ( lcd_d_task_time_max );
     Serial.print ( " ms called: " );
     Serial.print ( lcd_d_task_time_ran );
-    Serial.println ( " times" );
+    Serial.print ( " times total - " );
+    function_called = lcd_d_task_time_ran-debug_debug_times[2];
+    Serial.print ( function_called );
+    function_called_total = function_called_total+function_called;
+    debug_debug_times[2]=lcd_d_task_time_ran; 
+    Serial.println ( " since last seen" );
     
-    Serial.print ( " - Last LCD Control took " );
-    Serial.print ( lcd_c_task_time_stop-lcd_c_task_time_start );
+    Serial.print ( " - Last LCD Control takes " );
+    Serial.print ( lcd_c_task_time_max );
     Serial.print ( " ms called: " );
     Serial.print ( lcd_c_task_time_ran );
-    Serial.println ( " times" );
+    Serial.print ( " times total - " );
+    function_called = lcd_c_task_time_ran-debug_debug_times[3];
+    Serial.print ( function_called );
+    function_called_total = function_called_total+function_called;
+    debug_debug_times[3]=lcd_c_task_time_ran; 
+    Serial.println ( " since last seen" );
     
-    Serial.print ( " - Last GPIO took " );
-    Serial.print ( gpio_task_time_stop-gpio_task_time_start );
+    Serial.print ( " - Last GPIO takes " );
+    Serial.print ( gpio_task_time_max );
     Serial.print ( " ms called: " );
     Serial.print ( gpio_task_time_ran );
-    Serial.println ( " times" );
+    Serial.print ( " times total - " );
+    function_called = gpio_task_time_ran-debug_debug_times[4];
+    Serial.print ( function_called );
+    function_called_total = function_called_total+function_called;
+    debug_debug_times[4]=gpio_task_time_ran; 
+    Serial.println ( " since last seen" );
     
-    Serial.print ( " - Last Motor took " );
-    Serial.print ( motor_task_time_stop-motor_task_time_start );
+    Serial.print ( " - Last Motor takes " );
+    Serial.print ( motor_task_time_max);
     Serial.print ( " ms called: " );
     Serial.print ( motor_task_time_ran );
-    Serial.println ( " times" );
+    Serial.print ( " times total - " );
+    function_called = motor_task_time_ran-debug_debug_times[5];
+    Serial.print ( function_called );
+    function_called_total = function_called_total+function_called;
+    debug_debug_times[5]=motor_task_time_ran; 
+    Serial.println ( " since last seen" );
     Serial.println ( "===========================================" );
+    Serial.print ( " times function called since last run" );
+    Serial.print ( " times function called since last run" );
     Serial.println ( "===========================================" );
     Serial.println ( "run_blower_control()" );
     Serial.println ( "===========================================" );
@@ -111,7 +148,7 @@ void run_debug(){
           {
             if(sensors[i].turn_off )
             {
-              Serial.print ( "--" );
+              Serial.print ( "!!" );
             }else{
               Serial.print ( ">>" );
             }
@@ -148,7 +185,7 @@ void run_debug(){
           }
             Serial.println ( " " ); 
       }else{
-          Serial.print ( "  Sensor: (" );
+          Serial.print ( "  ~Sensor: (" );
           Serial.print ( i );
           Serial.println ( ") -  is DISABLED ignoring" );
       }

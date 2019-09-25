@@ -178,6 +178,8 @@ void run_lcd_draw()
                     lcd_last_sensor_flag_a=2;
                     lcd_last_sensor_b = i;
                     break;
+                  }else{
+                    lcd_last_sensor_c++;
                   }
                   if(lcd_debug){
                     Serial.print("name = ");
@@ -230,7 +232,7 @@ void run_lcd_draw()
             lcd.print("MCP23017 is offline ");
             lcd.setCursor(0, 2);
             lcd.print("at address 0x20");
-            lcd.setCursor(0, 2);
+            lcd.setCursor(0, 3);
             lcd.print(">>System Disabled<<");
             break;
           case 511:
@@ -241,7 +243,7 @@ void run_lcd_draw()
             lcd.print("MCP23017 is offline ");
             lcd.setCursor(0, 2);
             lcd.print("at address 0x21");
-            lcd.setCursor(0, 2);
+            lcd.setCursor(0, 3);
             lcd.print(">>System Disabled<<");
             break;
           case 512:
@@ -252,7 +254,7 @@ void run_lcd_draw()
             lcd.print("MCP23017 is offline ");
             lcd.setCursor(0, 2);
             lcd.print("at address 0x22");
-            lcd.setCursor(0, 2);
+            lcd.setCursor(0, 3);
             lcd.print(">>System Disabled<<");
             break;
           case 513:
@@ -263,7 +265,7 @@ void run_lcd_draw()
             lcd.print("MCP23017 is offline ");
             lcd.setCursor(0, 2);
             lcd.print("at address 0x23");
-            lcd.setCursor(0, 2);
+            lcd.setCursor(0, 3);
             lcd.print(">>System Disabled<<");
             break;
           default:
