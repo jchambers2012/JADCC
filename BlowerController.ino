@@ -12,6 +12,12 @@ Adafruit_MCP23017 mcp_20; //Zones 1-3 Sensors INDEX 0-15
   Adafruit_MCP23017 mcp_23; //Zones 4-6 Sensors INDEX 16-31
 #endif
 
+#ifdef BLOWER_CONTROL_WIFI
+  ESP8266WebServer server(80);
+  //holds the current upload
+  File fsUploadFile;
+#endif
+
 LiquidCrystal_I2C lcd(0x27, 20, 4);
 
 Task t_gpioControl(gpio_task_time, TASK_FOREVER, &do_sensor_control);
@@ -48,6 +54,50 @@ void setup() {
   Serial.println ( BLOWER_VERSION );
   Serial.println ( "Created By Jason Chambers" );
   Serial.println ( "Warning - This device does not contain any Emergency Control or Fail-Safe Functions. This device should not be used as a life safety system." );
+
+
+  lcd.clear();
+  lcd.print("Starting WiFi");
+  //WiFiManager
+  //Local intialization. Once its business is done, there is no need to keep it around
+  WiFiManager wifiManager;
+
+  //reset settings - for testing
+  //wifiManager.resetSettings();
+
+  //set minimu quality of signal so it ignores AP's under that quality
+  //defaults to 8%
+  //wifiManager.setMinimumSignalQuality();
+  
+  //sets timeout until configuration portal gets turned off
+  //useful to make it all retry or go to sleep
+  //in seconds
+  //wifiManager.setTimeout(120);
+
+  //fetches ssid and pass and tries to connect
+  //if it does not connect it starts an access point with the specified name
+  //here  "AutoConnectAP"
+  //and goes into a blocking loop awaiting configuration
+  
+  lcd.setCursor(0, 1);
+  lcd.print("Connecting to SSID");
+  if (!wifiManager.autoConnect("AutoConnectAP", "password")) {
+    Serial.println("failed to connect and hit timeout");
+    lcd.setCursor(0, 2);
+    lcd.print("Failed to connect");
+    //reset and try again, or maybe put it to deep sleep
+    //ESP.reset();
+    delay(5000);
+  }
+
+  //if you get here you have connected to the WiFi
+  Serial.println("connected...yeey :)");
+  lcd.setCursor(0, 2);
+  lcd.print("WiFi connected");
+  lcd.setCursor(0, 3);
+  lcd.print(WiFi.localIP());
+  Serial.println(WiFi.localIP());
+  delay(2000);
 
   #ifdef BLOWERCONTROLLER_DEBUG
   Serial.print ( "Zones Enabled: " );
@@ -281,6 +331,10 @@ void setup() {
   //sensors[13].turn_off = true;
   sensors[13].f1 = true;
   //master_stop = false;
+
+  #ifdef BLOWER_CONTROL_WIFI
+  web_setup();
+  #endif
 }
 
 
@@ -289,24 +343,11 @@ void loop() {
   system_loop_run++;
   ts.execute();
 
-  if (shouldSaveConfig) {
-    Serial.println("saving config");
-    DynamicJsonBuffer jsonBuffer;
-    JsonObject& json = jsonBuffer.createObject();
-    //json["mqtt_server"] = mqtt_server;
-    //json["mqtt_port"] = mqtt_port;
-    //json["blynk_token"] = blynk_token;
+  #ifdef BLOWER_CONTROL_WIFI
+  server.handleClient();
+  MDNS.update();
+  #endif
 
-    File configFile = SPIFFS.open("/config.json", "w");
-    if (!configFile) {
-      Serial.println("failed to open config file for writing");
-    }
-
-    json.printTo(Serial);
-    json.printTo(configFile);
-    configFile.close();
-    //end save
-  }
   if(system_loop_total>system_loop_max)
   {
     system_loop_max = system_loop_total;

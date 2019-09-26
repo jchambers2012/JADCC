@@ -9,6 +9,9 @@
 	// 2 would give you 30 inputs
 #define BLOWER_CONTROL_BOARDS 1
 
+#ifdef BLOWER_CONTROL_WIFI
+#endif
+#define BLOWER_CONTROL_WIFI
 
 // Define the default setting for each setting
 

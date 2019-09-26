@@ -11,4 +11,15 @@ void read_button_black();
 void read_button_blue();
 void read_button_yellow();
 void run_debug();
+
+//WEB SERVER FUNCTIONS
+String formatBytes(size_t bytes);
+String getContentType(String filename);
+bool handleFileRead(String path);
+void handleFileUpload();
+void handleFileDelete();
+void handleFileCreate();
+void handleFileList();
+void web_setup();
+
 #endif /* functions.h */

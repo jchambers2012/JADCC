@@ -88,8 +88,6 @@ void run_debug(){
     debug_debug_times[6]=MCP_task_time_ran; 
     Serial.println ( " since last seen" );
     Serial.println ( "===========================================" );
-    Serial.println ( " times function called since last run" );
-    Serial.println ( "===========================================" );
     Serial.println ( "run_blower_control()" );
     Serial.println ( "===========================================" );
     Serial.println ( "Current state of the system:" );
