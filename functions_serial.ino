@@ -76,9 +76,19 @@ void run_debug(){
     function_called_total = function_called_total+function_called;
     debug_debug_times[5]=motor_task_time_ran; 
     Serial.println ( " since last seen" );
+    
+    Serial.print ( " - Last MCP Check takes " );
+    Serial.print ( MCP_task_time_max);
+    Serial.print ( " ms called: " );
+    Serial.print ( MCP_task_time_ran );
+    Serial.print ( " times total - " );
+    function_called = MCP_task_time_ran-debug_debug_times[6];
+    Serial.print ( function_called );
+    function_called_total = function_called_total+function_called;
+    debug_debug_times[6]=MCP_task_time_ran; 
+    Serial.println ( " since last seen" );
     Serial.println ( "===========================================" );
-    Serial.print ( " times function called since last run" );
-    Serial.print ( " times function called since last run" );
+    Serial.println ( " times function called since last run" );
     Serial.println ( "===========================================" );
     Serial.println ( "run_blower_control()" );
     Serial.println ( "===========================================" );

@@ -1,9 +1,12 @@
 #ifndef BLOWERCONTROLLER_VARIABLE_H
 #define BLOWERCONTROLLER_VARIABLE_H
 
-#define BLOWER_VERSION "0.05 BETA"
+#define BLOWER_VERSION "0.06 BETA"
 
 Scheduler ts, cts; 
+
+RCSwitch motorRF = RCSwitch();
+
 bool shouldSaveConfig = false;    //flag for saving data
 
 bool debug_debug = true;
@@ -84,8 +87,10 @@ bool motor_force_state = true;      //used to forcethe do_motor_control() functi
 volatile bool motor_logic_state = false;     //used by the run_blower_control() to set the blower state
 volatile bool motor_sent_state = false;       //used by the do_motor_control() to set the blower state
 
-bool motor_ir = false;              //if the motor needs to send an IR code out to start/stop the motor
+bool motor_rf = false;              //if the motor needs to send an RF code out to start/stop the motor
 bool motor_f2 = false;              //if the motor is controlled via Function Relay 2
+bool motor_ir = false;              //if the motor needs to send an IR code out to start/stop the motorbool motor_f2 = false;
+
 
 int MCP_task_time = 10000;
 unsigned long MCP_task_time_start, MCP_task_time_stop, MCP_task_time_ran, MCP_task_time_max; //Track the time each function takes to run

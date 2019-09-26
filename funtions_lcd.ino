@@ -17,21 +17,21 @@ void run_lcd_control()
     }
     
     #if defined(BLOWER_CONTROL_BOARDS) && BLOWER_CONTROL_BOARDS >= 2
-    if(MCP_enabled_21==true && MCP_online_21 == false)
+    if(MCP_enabled_21 == true && MCP_online_21 == false)
     {
           lcd_screen_next = 511;
           lcd_screen_delay = 0; 
     }
    #endif
     #if defined(BLOWER_CONTROL_BOARDS) && BLOWER_CONTROL_BOARDS >= 3
-    if(MCP_enabled_22==true && MCP_online_22 == false)
+    if(MCP_enabled_22 == true && MCP_online_22 == false)
     {
           lcd_screen_next = 512;
           lcd_screen_delay = 0; 
     }
    #endif
     #if defined(BLOWER_CONTROL_BOARDS) && BLOWER_CONTROL_BOARDS >= 4
-    if(MCP_enabled_23==true && MCP_online_23 == false)
+    if(MCP_enabled_23 == true && MCP_online_23 == false)
     {
           lcd_screen_next = 514;
           lcd_screen_delay = 0; 

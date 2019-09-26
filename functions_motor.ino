@@ -86,6 +86,16 @@ void do_motor_control(bool toState)
     //if a loop or muliple IP pulses are needed to be sent, dont set the state yet so we keep getting called
      motor_sent_state = toState;
   }
+  if(motor_rf ==true)
+  {
+    //prefrom an IR pulse out to motor
+    //if a loop or muliple IP pulses are needed to be sent, dont set the state yet so we keep getting called
+     motor_sent_state = toState;
+     //motorRF.setProtocol(1);
+     //motorRF.setPulseLength(175);
+     //motorRF.setRepeatTransmit(7);
+     //motorRF.send("010101010001010100110011");
+  }
   if(motor_f2 ==true)
   {
       digitalWrite(RELAY_F2, toState);    

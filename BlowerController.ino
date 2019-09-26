@@ -214,7 +214,7 @@ void setup() {
 	  //Dual controller board is enabled
       mcp_21.begin(1);      // use default address 1 (0x21)
       for (int i = 0; i <= 15; i++) {
-        mcp.pinMode(i, INPUT);
+        mcp_21.pinMode(i, INPUT);
       }
 	  gpio_max_read = 31;  //Incease the number of sensor that should be read by the system
 	}
@@ -226,7 +226,7 @@ void setup() {
 	  //Dual controller board is enabled
       mcp_22.begin(1);      // use default address 1 (0x21)
       for (int i = 0; i <= 15; i++) {
-        mcp.pinMode(i, INPUT);
+        mcp_22.pinMode(i, INPUT);
       }
 	  gpio_max_read = 31;  //Incease the number of sensor that should be read by the system
 	}
@@ -238,12 +238,17 @@ void setup() {
 	  //Dual controller board is enabled
       mcp_23.begin(1);      // use default address 1 (0x21)
       for (int i = 0; i <= 15; i++) {
-        mcp.pinMode(i, INPUT);
+        mcp_23.pinMode(i, INPUT);
       }
 	  gpio_max_read = 31;  //Incease the number of sensor that should be read by the system
 	}
   #endif
-  
+  if(motor_rf)
+  {
+    Serial.println("Starting the RF TX");
+    motorRF.enableTransmit(GPIO_IR);
+    Serial.println("DONE: Starting the RF TX");
+  }
   //Force Sensor 15 to be a stop switch but allow other config settings.
   //This can not be overwritten and remain enabled and to disable the motor.
   //Hard coded logic in do_sensor_control() will also disable the motor if

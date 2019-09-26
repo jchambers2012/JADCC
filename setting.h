@@ -3,7 +3,6 @@
 #ifndef BLOWERCONTROLLER_SETTINGS_H
 #define BLOWERCONTROLLER_SETTINGS_H
 #define BLOWERCONTROLLER_DEBUG
-#include "variable.h"
 
 //Set the number of control boards in the system. Only 1 is supported at this time
 	// 1 would give you 15 inputs 
