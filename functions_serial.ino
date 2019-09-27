@@ -87,6 +87,44 @@ void run_debug(){
     function_called_total = function_called_total+function_called;
     debug_debug_times[6]=MCP_task_time_ran; 
     Serial.println ( " since last seen" );
+    #ifdef BLOWER_CONTROL_WIFI
+    Serial.println ( "===========================================" );
+    Serial.println ( "WiFi:" );
+    Serial.println ( "===========================================" );
+    Serial.print("MAC ADDRESS: ");
+    Serial.println(WiFi.macAddress());
+    switch(WiFi.status()){
+      case WL_CONNECTED:
+       Serial.print ( "WL_CONNECTED: WiFi connected to '" );
+       Serial.print ( WiFi.SSID() );
+       Serial.print ( "' IP: '" );
+       Serial.print ( WiFi.localIP());
+       Serial.println ( "'" );
+      break; 
+      case WL_NO_SSID_AVAIL:
+       Serial.print ( "WL_NO_SSID_AVAIL: Failed to find '" );
+       Serial.print ( WiFi.SSID() );
+       Serial.println ( "'" );
+      break;
+      case WL_CONNECT_FAILED:
+       Serial.print ( "WL_CONNECT_FAILED: Filed to connected to '" );
+       Serial.print ( WiFi.SSID() );
+       Serial.println ( "'" );
+      break;
+      case WL_CONNECTION_LOST:
+       Serial.print ( "WL_CONNECTION_LOST: Connection lost to '" );
+       Serial.print ( WiFi.SSID() );
+       Serial.println ( "'" );
+      break;
+      case WL_DISCONNECTED:
+       Serial.print ( "WL_DISCONNECTED: Disconnected from '" );
+       Serial.print ( WiFi.SSID() );
+       Serial.println ( "'" );
+      break;
+      default:
+       Serial.print ( "UNKNOWN ISSUE" );
+    }
+   #endif
     Serial.println ( "===========================================" );
     Serial.println ( "run_blower_control()" );
     Serial.println ( "===========================================" );

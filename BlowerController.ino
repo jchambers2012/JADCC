@@ -55,7 +55,7 @@ void setup() {
   Serial.println ( "Created By Jason Chambers" );
   Serial.println ( "Warning - This device does not contain any Emergency Control or Fail-Safe Functions. This device should not be used as a life safety system." );
 
-
+  #ifdef BLOWER_CONTROL_WIFI
   lcd.clear();
   lcd.print("Starting WiFi");
   //WiFiManager
@@ -64,29 +64,18 @@ void setup() {
 
   //reset settings - for testing
   //wifiManager.resetSettings();
-
-  //set minimu quality of signal so it ignores AP's under that quality
-  //defaults to 8%
-  //wifiManager.setMinimumSignalQuality();
-  
-  //sets timeout until configuration portal gets turned off
-  //useful to make it all retry or go to sleep
-  //in seconds
-  //wifiManager.setTimeout(120);
-
-  //fetches ssid and pass and tries to connect
-  //if it does not connect it starts an access point with the specified name
-  //here  "AutoConnectAP"
-  //and goes into a blocking loop awaiting configuration
-  
+  wifiManager.setAPCallback(wificonfigModeCallback);
+  wifiManager.setConfigPortalTimeout(60);
   lcd.setCursor(0, 1);
   lcd.print("Connecting to SSID");
-  if (!wifiManager.autoConnect("AutoConnectAP", "password")) {
+  lcd.setCursor(0, 2);    
+  lcd.print( WiFi.SSID() );
+  lcd.setCursor(0, 3);    
+  lcd.print("Timeout 60 Sec");
+  if (!wifiManager.autoConnect("BlowerConfig")) {
     Serial.println("failed to connect and hit timeout");
     lcd.setCursor(0, 2);
     lcd.print("Failed to connect");
-    //reset and try again, or maybe put it to deep sleep
-    //ESP.reset();
     delay(5000);
   }
 
@@ -98,7 +87,9 @@ void setup() {
   lcd.print(WiFi.localIP());
   Serial.println(WiFi.localIP());
   delay(2000);
+  #endif
 
+  
   #ifdef BLOWERCONTROLLER_DEBUG
   Serial.print ( "Zones Enabled: " );
   Serial.println ( sensors_zone_num );

@@ -1,7 +1,7 @@
 #ifndef BLOWERCONTROLLER_VARIABLE_H
 #define BLOWERCONTROLLER_VARIABLE_H
 
-#define BLOWER_VERSION "0.06 BETA"
+#define BLOWER_VERSION "0.08 BETA"
 
 Scheduler ts, cts; 
 
@@ -29,8 +29,10 @@ int lcd_last_sensor_b = 0;
 int lcd_last_sensor_c = 0;
 byte lcd_last_sensor_flag_a = 0;
 bool lcd_last_sensor_flag_b = false;
+bool lcd_last_sensor_flag_wifi = false;
 int lcd_screen_next = 0;
 int lcd_screen_delay = 0;
+byte lcd_wifi_none[8] ={0b01010,0b00100,0b01010,0b00000,0b10001,0b10001,0b11111,0b01110};
 //char lcd_error[2][20] = "";
 
 

@@ -20,6 +20,8 @@ void handleFileUpload();
 void handleFileDelete();
 void handleFileCreate();
 void handleFileList();
+#ifdef BLOWER_CONTROL_WIFI
 void web_setup();
-
+void wificonfigModeCallback(WiFiManager *myWiFiManager);
+#endif
 #endif /* functions.h */

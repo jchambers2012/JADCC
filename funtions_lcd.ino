@@ -81,6 +81,7 @@ void run_lcd_draw()
             if(lcd_debug){Serial.println("LCD Screen 0: starting the LCD screen");}
             lcd.clear();
             lcd.print("System booting...");
+            lcd.createChar(8, lcd_wifi_none);
             lcd_screen_next = 1;
             break;
           case 1:
@@ -275,6 +276,17 @@ void run_lcd_draw()
             
         }
     }
+        if(WiFi.status()!= WL_CONNECTED)
+        {
+            if(lcd_last_sensor_flag_wifi)
+            {
+              lcd.setCursor(19, 0);
+              lcd.write(8);
+              lcd_last_sensor_flag_wifi = false;
+            }else{
+              lcd_last_sensor_flag_wifi = true;
+            }
+        }
   }
   if(lcd_debug){Serial.print("LCD DELAY: ");Serial.println(lcd_screen_delay);}
   if(lcd_debug){Serial.print("lcd_screen: ");Serial.println(lcd_screen);}
