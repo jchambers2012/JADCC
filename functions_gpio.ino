@@ -47,15 +47,17 @@ void do_sensor_control(){
 		  sensors[i].current = false;
       }
 	  #else
-	    //Controller is setup for single control board
-        sensors[i].current = mcp_20.digitalRead(i);
-      #endif
+	  //Controller is setup for single control board
+    sensors[i].current = mcp_20.digitalRead(i);
+    #endif
       //verify that the sensor has not flipped
       if(sensors[i].current != sensors[i].last)
       {
         //the sensor has flip, set the sensor to verification mode
         sensors[i].times = 0;
         sensors[i].last = sensors[i].current;
+        sensors[i].processed_h=false;
+        sensors[i].processed_l=false;
       }
       
       if(sensors[i].times >= sensors[i].times_required)
@@ -88,6 +90,16 @@ void do_sensor_control(){
           //trigger a system halt until the green button is pressed
           master_stop = true;
         }
+      }
+      if(sensors[i].confirmed==true && sensors[i].processed_h == false)
+      {
+        sensors[i].processed_h=true;
+        sensors[i].time_on = millis();
+      }else if(sensors[i].confirmed==false && sensors[i].processed_l == false){ 
+        sensors[i].processed_l=true;
+        sensors[i].time_off = millis();
+        sensors[i].time_total = sensors[i].time_off - sensors[i].time_on;
+        
       }
       //see if the sensor should be used to turn the Function 1 relay on and the sensor is in a on state
       if(sensors[i].f1 == true && sensors[i].confirmed == true)
@@ -153,6 +165,8 @@ void read_button_green(){
   {
     //the sensor has flip, set the sensor to verification mode
     gpio_button_green.times = 0;
+    gpio_button_green.processed_h=false;
+    gpio_button_green.processed_l=false;
     gpio_button_green.last = gpio_button_green.current;
   }
   if(gpio_button_green.times > gpio_button_green.times_required)
@@ -162,6 +176,17 @@ void read_button_green(){
     if(gpio_button_green.confirmed==true)
     {
       master_stop = false;
+    }
+    //Figure how long the btton was pressed to be used to "unlock" hidden functions
+    if(gpio_button_green.confirmed==true && gpio_button_green.processed_h==false)
+    {
+      gpio_button_green.processed_h=true;
+      gpio_button_green.time_on = millis();
+    }else if(gpio_button_green.confirmed==false && gpio_button_green.processed_l==false){
+      gpio_button_green.processed_l=true;
+      gpio_button_green.time_off = millis();
+      gpio_button_green.time_total = gpio_button_green.time_off - gpio_button_green.time_on;
+      
     }
   }else{
      //sensos has not been fully verifed, increase the trust conuter

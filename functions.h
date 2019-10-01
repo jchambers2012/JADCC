@@ -12,6 +12,7 @@ void read_button_blue();
 void read_button_yellow();
 void run_debug();
 
+#ifdef BLOWER_CONTROL_WIFI
 //WEB SERVER FUNCTIONS
 String formatBytes(size_t bytes);
 String getContentType(String filename);
@@ -20,8 +21,10 @@ void handleFileUpload();
 void handleFileDelete();
 void handleFileCreate();
 void handleFileList();
-#ifdef BLOWER_CONTROL_WIFI
 void web_setup();
 void wificonfigModeCallback(WiFiManager *myWiFiManager);
+void ntp_sync();
+void ntp_start();
+void sendNTPpacket(IPAddress& address);
 #endif
 #endif /* functions.h */

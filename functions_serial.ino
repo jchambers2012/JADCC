@@ -148,18 +148,27 @@ void run_debug(){
     Serial.print ( " - motor_force_state = " );
     Serial.println ( motor_force_state );
     Serial.print ( " - gpio_button_green.current = " );
-    Serial.println ( gpio_button_green.current );
+    Serial.print ( gpio_button_green.current );
+    Serial.print ( " - Held for = " );
+    Serial.println ( gpio_button_green.time_total );
+    Serial.println ( gpio_button_green.time_on );
+    Serial.println ( gpio_button_green.time_off );
+    Serial.println ( gpio_button_green.processed_h );
+    Serial.println ( gpio_button_green.processed_l );
     Serial.println ( "===========================================" );
-    Serial.print ( " - lcd_screen = " );
-    Serial.println ( lcd_screen );
-    Serial.print ( " - lcd_screen_next = " );
-    Serial.println ( lcd_screen_next );
-    Serial.print ( " - lcd_screen_delay = " );
-    Serial.println ( lcd_screen_delay );
-    Serial.print ( " - lcd_redraw = " );
-    Serial.println ( lcd_redraw );
-    Serial.print ( " - lcd_last_sensor_flag_b = " );
-    Serial.println ( lcd_last_sensor_flag_b );
+    Serial.print ( " - lcd_loop_c = " );
+    Serial.println ( lcd_loop_c );
+    Serial.print ( " - lcd_loop_i = " );
+    Serial.println ( lcd_loop_i );
+    Serial.print ( " - lcd_loop[lcd_loop_c] = " );
+    Serial.println ( lcd_loop[lcd_loop_c] );
+    Serial.print ( " - lcd_loop[] = " );
+    for (int i = 0; i <= lcd_loop_m; i++) {
+      Serial.print ( lcd_loop[i] );
+      Serial.print ( " (delay " );
+      Serial.print ( lcd_loop_delay[i] );
+      Serial.println ( ") " );
+    }
     Serial.println ( "===========================================" );
     Serial.print ( " - gpio_max_read = " );
     Serial.println ( gpio_max_read );
@@ -221,6 +230,14 @@ void run_debug(){
             Serial.print ( " (Read Error)" );
             master_blower_off = true;
           }
+          if(sensors[i].processed_l = false)
+          {
+            Serial.print ( " being held high for " );
+            Serial.print (  millis() - sensors[i].time_on );
+          }else if(sensors[i].processed_h = false){
+            Serial.print ( " was held high for " );
+            Serial.print (  sensors[i].time_total );
+          }
           if(sensors[i].times < sensors[i].times_required)
           {
             Serial.print ( " (Needs Verification of " );
@@ -229,7 +246,7 @@ void run_debug(){
             Serial.print ( sensors[i].times );
             Serial.print ( ")" );
           }
-            Serial.println ( " " ); 
+            Serial.println ( " " );
       }else{
           Serial.print ( "  ~Sensor: (" );
           Serial.print ( i );

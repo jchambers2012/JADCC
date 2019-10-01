@@ -32,6 +32,8 @@ Task t_run_lcd_draw(lcd_d_task_time, TASK_FOREVER, &run_lcd_draw);
 
 Task t_run_debug(debug_debug_task_time, TASK_FOREVER, &run_debug);
 
+Task t_ntp_sync(10000, TASK_FOREVER, &ntp_sync);
+
 void setup() {
   pinMode(RELAY_F1, OUTPUT);
   digitalWrite(RELAY_F1, false);  
@@ -65,28 +67,45 @@ void setup() {
   //reset settings - for testing
   //wifiManager.resetSettings();
   wifiManager.setAPCallback(wificonfigModeCallback);
-  wifiManager.setConfigPortalTimeout(60);
+  wifiManager.setConfigPortalTimeout(30);
   lcd.setCursor(0, 1);
   lcd.print("Connecting to SSID");
   lcd.setCursor(0, 2);    
   lcd.print( WiFi.SSID() );
-  lcd.setCursor(0, 3);    
-  lcd.print("Timeout 60 Sec");
   if (!wifiManager.autoConnect("BlowerConfig")) {
     Serial.println("failed to connect and hit timeout");
     lcd.setCursor(0, 2);
     lcd.print("Failed to connect");
     delay(5000);
   }
+  if(WiFi.SSID().length()>0)
+  {
+    //if you get here you have connected to the WiFi
+    Serial.println("connected...yeey :)");
+    lcd.setCursor(0, 2);
+    lcd.print("WiFi connected");
+    lcd.setCursor(0, 3);
+    lcd.print("                    ");
+    lcd.setCursor(0, 3);
+    Serial.println("1");
+    lcd.print(WiFi.localIP());
+    Serial.println("2");
+    Serial.println(WiFi.localIP());
+    Serial.println("3");
+    //delay(2000);
+    lcd_wifi = true;
+    wifi_enabled = true;
+    Serial.println("WiFi setup done)");
+  }else{
+    //if you get here you have connected to the WiFi
+    Serial.println("WiFi not setup");
+    lcd.clear();
+    lcd.print("WiFi not set up");
+    delay(2000);
+    lcd_wifi = false;
+    wifi_enabled = false;
+  }
 
-  //if you get here you have connected to the WiFi
-  Serial.println("connected...yeey :)");
-  lcd.setCursor(0, 2);
-  lcd.print("WiFi connected");
-  lcd.setCursor(0, 3);
-  lcd.print(WiFi.localIP());
-  Serial.println(WiFi.localIP());
-  delay(2000);
   #endif
 
   
@@ -245,8 +264,14 @@ void setup() {
   } else {
     Serial.println("failed to mount FS");
   }
-  
-  
+
+
+  if(wifi_enabled == true && ntp_enabled == true)
+  {
+    ntp_start();
+    ts.addTask(t_ntp_sync);
+    t_ntp_sync.enable();    
+  }
   
   //This controller is complied for 2 controller
   #if defined(BLOWER_CONTROL_BOARDS) && BLOWER_CONTROL_BOARDS >= 2

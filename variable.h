@@ -16,6 +16,16 @@ unsigned long debug_debug_times[10];
 unsigned long system_loop_start,system_loop_total,system_loop_run,system_loop_max; //Track the time each function takes to run
 
 bool lcd_debug = false;
+int lcd_loop[10]=      {0,1,2,3,4,0,0,0,0,0};
+byte lcd_loop_delay[10]={0,0,4,0,0,0,0,0,0,0};
+byte lcd_loop_i = 5;
+byte lcd_loop_c = 0;
+const byte lcd_loop_m = 9;
+int lcd_sensor[10]={0,0,0,0,0,0,0,0,0};
+byte lcd_sensor_i = 0;
+byte lcd_sensor_c = 0;
+const byte lcd_sensor_m = 9;
+bool lcd_sensor_flip = false;
 int lcd_d_task_time = 1000;  //how offen to refresh the LDC screen
 int lcd_c_task_time = 250;   //how offen the LCD logic is run to see what screens need to be seen based on GPIOs and Motor Logic
 unsigned long lcd_d_task_time_start, lcd_d_task_time_stop, lcd_d_task_time_ran, lcd_d_task_time_max, lcd_c_task_time_start, lcd_c_task_time_stop, lcd_c_task_time_ran, lcd_c_task_time_max; //Track the time each function takes to run
@@ -32,7 +42,9 @@ bool lcd_last_sensor_flag_b = false;
 bool lcd_last_sensor_flag_wifi = false;
 int lcd_screen_next = 0;
 int lcd_screen_delay = 0;
-byte lcd_wifi_none[8] ={0b01010,0b00100,0b01010,0b00000,0b10001,0b10001,0b11111,0b01110};
+bool lcd_wifi = false;
+//byte lcd_wifi_none[8] ={0b01010,0b00100,0b01010,0b00000,0b10001,0b10001,0b11111,0b01110};// Router with an x
+byte lcd_wifi_none[8] = { 0b10100, 0b01000, 0b10100, 0b00001, 0b00011, 0b00111, 0b01111, 0b11111}; //Bars with an x
 //char lcd_error[2][20] = "";
 
 
@@ -50,6 +62,11 @@ typedef struct {
   bool confirmed = false;           //The state that will be processed for this sesnor
   byte times = 0;                   //The numbers of time the state has been stable from the MCP to help debounce the buttons
   byte times_required = 2;          //The numbers of time the state has to be stable
+  unsigned long time_on = 0;        //The time the button was pressed
+  unsigned long time_off = 1;       //The time the button was released
+  unsigned long time_total = 0;     //Total time the button was held
+  bool processed_h = false;         //set high once time_on is set
+  bool processed_l = false;         //set high once time_off is set
 } sensor_type;
 #if defined(BLOWER_CONTROL_BOARDS) && BLOWER_CONTROL_BOARDS == 2
   sensor_type sensors[32]; // Two control board in use
@@ -71,6 +88,11 @@ typedef struct {
   bool confirmed = false;           //The state that will be processed for this sesnor
   byte times = 0;                   //The numbers of time the state has been stable from the MCP to help debounce the buttons
   byte times_required = 3;          //The numbers of time the state has to be stable
+  unsigned long time_on = 0;        //The time the button was pressed
+  unsigned long time_off = 1;       //The time the button was released
+  unsigned long time_total = 0;     //Total time the button was held
+  bool processed_h = false;         //set high once time_on is set
+  bool processed_l = false;         //set high once time_off is set
 } gpio_type;
 
 gpio_type gpio_button_green;
@@ -121,6 +143,19 @@ bool master_f2_on = false;
 
 const unsigned int check_sensors = 100;
 unsigned long lastSampleTime = millis();
+
+#ifdef BLOWER_CONTROL_WIFI
+bool wifi_enabled = false;
+unsigned int ntp_localPort = 2390;      // local port to listen for UDP packets
+IPAddress timeServerIP; // time.nist.gov NTP server address
+const char* ntpServerName = "time.nist.gov";
+const int NTP_PACKET_SIZE = 48; // NTP time stamp is in the first 48 bytes of the message
+byte packetBuffer[ NTP_PACKET_SIZE]; //buffer to hold incoming and outgoing packets
+WiFiUDP ntp_udp;
+bool ntp_enabled = true;
+long utcOffsetInSeconds = -18000;
+#endif
+
 
 #define MOTOR_STOP false
 #define MOTOR_START true
