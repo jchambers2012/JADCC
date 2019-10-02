@@ -32,7 +32,9 @@ Task t_run_lcd_draw(lcd_d_task_time, TASK_FOREVER, &run_lcd_draw);
 
 Task t_run_debug(debug_debug_task_time, TASK_FOREVER, &run_debug);
 
+#ifdef BLOWER_CONTROL_WIFI
 Task t_ntp_sync(10000, TASK_FOREVER, &ntp_sync);
+#endif
 
 void setup() {
   pinMode(RELAY_F1, OUTPUT);
@@ -266,13 +268,15 @@ void setup() {
   }
 
 
+  #ifdef BLOWER_CONTROL_WIFI
   if(wifi_enabled == true && ntp_enabled == true)
   {
     ntp_start();
     ts.addTask(t_ntp_sync);
-    t_ntp_sync.enable();    
+    t_ntp_sync.enable();   
+    call_ntp_sync(); 
   }
-  
+  #endif
   //This controller is complied for 2 controller
   #if defined(BLOWER_CONTROL_BOARDS) && BLOWER_CONTROL_BOARDS >= 2
     if(MCP_enabled_21==true)

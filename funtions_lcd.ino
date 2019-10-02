@@ -59,61 +59,52 @@ void run_lcd_control()
    #endif
   }else if(master_stop){
     //System in standby - screens 400-499
-    if(lcd_screen <= 400 || lcd_screen >= 499 )
+    if(lcd_loop_i<=lcd_loop_m)
     {
-          if(lcd_loop_i<=lcd_loop_m)
-          {
-            lcd_loop[lcd_loop_i] = 400; 
-            lcd_loop_delay[lcd_loop_i]=0;
-            lcd_loop_i++;
-          }
+      lcd_loop[lcd_loop_i] = 400; 
+      lcd_loop_delay[lcd_loop_i]=0;
+      lcd_loop_i++;
     }
   }else if(master_blower_on == true && master_blower_off == false){
     //Motor sensor on/running - screens 200-299
-    if(lcd_screen < 200 || lcd_screen > 249 )
-    {
-          for (int i = 0; i <= 14; i++) {
-            if(sensors[i].enable == true && sensors[i].confirmed == true)
+      lcd_sensor_i = 0;
+      lcd_sensor_flip = true;
+      for (int i = 0; i <= 14; i++) {
+        if(sensors[i].enable == true && sensors[i].confirmed == true)
+        {
+          if(lcd_sensor_flip==true)
+          {
+            if(lcd_loop_i<=lcd_loop_m)
             {
-              if(lcd_loop_i<=lcd_loop_m )
-              {
-                if(lcd_sensor_flip==true)
-                {
-                  lcd_loop[lcd_loop_i] = 200; 
-                  lcd_loop_i++;
-                  lcd_sensor_flip = false;
-                  lcd_sensor[lcd_sensor_i]=i;
-                  lcd_loop_delay[lcd_loop_i]=0;
-                  lcd_sensor_i++;
-                }else{
-                  lcd_sensor_flip = true;
-                  lcd_sensor[lcd_sensor_i]=i;
-                  lcd_loop_delay[lcd_loop_i]=0;
-                  lcd_sensor_i++;
-                  
-                }
-              }else{
-                break;
-              }
-              if(lcd_sensor_i>=lcd_sensor_m)
-              {
-                break;
-              }
+              lcd_loop[lcd_loop_i] = 200; 
+              lcd_loop_delay[lcd_loop_i]=2;
+              lcd_loop_i++;
+            }else{
+              break;
             }
+            lcd_sensor_flip = false;
+          }else{
+            lcd_sensor_flip = true;
           }
-    }
+          if(lcd_sensor_i<=lcd_sensor_m)
+          {
+            lcd_sensor[lcd_sensor_i]=i;
+            lcd_sensor_i++;
+          }else{
+            break;
+          }
+        }
+      }
   }else if(master_blower_on == false && master_blower_off == false){
     //Motor sensor on/running - screens 200-299
-    if(lcd_screen <= 250 || lcd_screen >= 299 )
+    if(lcd_loop_i<=lcd_loop_m)
     {
-          if(lcd_loop_i<=lcd_loop_m)
-          {
-            lcd_loop[lcd_loop_i] = 250; 
-            lcd_loop_delay[lcd_loop_i]=0;
-            lcd_loop_i++;
-          }
+      lcd_loop[lcd_loop_i] = 250; 
+      lcd_loop_delay[lcd_loop_i]=0;
+      lcd_loop_i++;
     }
   }
+  #ifdef BLOWER_CONTROL_WIFI
   if(WiFi.status()!= WL_CONNECTED)
   {
     if(lcd_loop_i<=lcd_loop_m)
@@ -134,6 +125,7 @@ void run_lcd_control()
     }
     
   }
+  #endif
   lcd_c_task_time_stop = millis();
 }
 void run_lcd_draw()
@@ -185,6 +177,11 @@ void run_lcd_draw()
           case 202:
           case 203:
             if(lcd_debug){Serial.println("LCD Screen 200/201:system on and running");}
+            Serial.print("lcd_sensor_c");
+            Serial.println(lcd_sensor_c);
+            Serial.print("lcd_sensor_i");
+            Serial.println(lcd_sensor_i);
+            
             if(lcd_last_sensor_a==0)
             {
               lcd.clear();
@@ -194,17 +191,17 @@ void run_lcd_draw()
               lcd.print("Sensor(s) Active:");
               //lcd_last_sensor_flag_b = false;
               lcd_last_sensor_a = 1;
-              lcd_redraw = LCD_REDRAW_TIMES;
+              //lcd_redraw = LCD_REDRAW_TIMES;
             }else if(lcd_last_sensor_a==1)
             {
               lcd.clear();
               lcd.setCursor(0, 0);
               lcd.print(" >  Motor Online  < ");
-              lcd.setCursor(0, 1);
+              lcd.setCursor(0, 1);;
               lcd.print("Sensor(s) Active:");
               //lcd_last_sensor_flag_b = false;
               lcd_last_sensor_a = 2;
-              lcd_redraw = LCD_REDRAW_TIMES;
+              //lcd_redraw = LCD_REDRAW_TIMES;
             }else if(lcd_last_sensor_a==2)
             {
               lcd.clear();
@@ -214,35 +211,31 @@ void run_lcd_draw()
               lcd.print("Sensor(s) Active:");
               //lcd_last_sensor_flag_b = false;
               lcd_last_sensor_a = 3;
-              lcd_redraw = LCD_REDRAW_TIMES;
             }else{
               lcd.clear();
               lcd.setCursor(0, 0);
               lcd.print("   >Motor Online<   ");
-              //lcd_last_sensor_flag_b = true;
+              //lcd_last_sensor_flag_b = true;;
               lcd_last_sensor_a = 0;
-              lcd_redraw = LCD_REDRAW_TIMES;
               lcd.setCursor(0, 1);
               lcd.print("Sensor(s) Active:");
             }
-              lcd_last_sensor_flag_a=0;
-              if(lcd_sensor_c>lcd_sensor_i)
+              if(lcd_sensor_c>=lcd_sensor_i)
               {
-                if(lcd_last_sensor_flag_a==0)
-                {
-                  lcd.setCursor(0, 2);
-                  lcd.print(sensors[lcd_sensor[lcd_sensor_c]].c_name);
-                  lcd_sensor_c++;
-                  lcd_last_sensor_flag_a=1;
-                }else if(lcd_sensor_c>lcd_sensor_i){
-                  //null nothing to do
-                }else if(lcd_last_sensor_flag_a==1){
-                  lcd.setCursor(0, 3);
-                  lcd.print(sensors[lcd_sensor[lcd_sensor_c]].c_name);
-                  lcd_last_sensor_flag_a=2;
-                  lcd_last_sensor_c++;
-                }
-              } 
+               lcd_sensor_c = 0; 
+              }
+              lcd.setCursor(0, 2);
+              lcd.print(sensors[lcd_sensor[lcd_sensor_c]].c_name);
+              lcd_sensor_c++;
+              if(lcd_sensor_c<=lcd_sensor_i && lcd_sensor_c != 0)
+              {
+                lcd.setCursor(0, 3);
+                lcd.print(sensors[lcd_sensor[lcd_sensor_c]].c_name);
+                lcd_sensor_c++;
+              }else{
+               lcd_sensor_c = 0; 
+              }
+
             break;
           case 230:
             if(lcd_debug){Serial.println("LCD Screen 250:system in standby");}
@@ -367,12 +360,12 @@ void run_lcd_draw()
   {
     lcd_loop_c = 0;
   }else{   
-    if(lcd_loop_delay[lcd_loop_c]>0)
-    {
+    //if(lcd_loop_delay[lcd_loop_c]>0)
+    //{
       lcd_loop_c++;
-    }else{
-      lcd_loop_delay[lcd_loop_c]--;
-    }
+    //}else{
+    //  lcd_loop_delay[lcd_loop_c]--;
+    //}
   }
   lcd_d_task_time_stop = millis();
 }

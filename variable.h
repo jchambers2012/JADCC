@@ -16,15 +16,15 @@ unsigned long debug_debug_times[10];
 unsigned long system_loop_start,system_loop_total,system_loop_run,system_loop_max; //Track the time each function takes to run
 
 bool lcd_debug = false;
-int lcd_loop[10]=      {0,1,2,3,4,0,0,0,0,0};
+int lcd_loop[10]=       {0,1,2,3,4,0,0,0,0,0};
 byte lcd_loop_delay[10]={0,0,4,0,0,0,0,0,0,0};
 byte lcd_loop_i = 5;
 byte lcd_loop_c = 0;
-const byte lcd_loop_m = 9;
+const byte lcd_loop_m = 5;
 int lcd_sensor[10]={0,0,0,0,0,0,0,0,0};
 byte lcd_sensor_i = 0;
 byte lcd_sensor_c = 0;
-const byte lcd_sensor_m = 9;
+const byte lcd_sensor_m = 5 ;
 bool lcd_sensor_flip = false;
 int lcd_d_task_time = 1000;  //how offen to refresh the LDC screen
 int lcd_c_task_time = 250;   //how offen the LCD logic is run to see what screens need to be seen based on GPIOs and Motor Logic

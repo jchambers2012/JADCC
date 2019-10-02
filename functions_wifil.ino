@@ -97,6 +97,9 @@ void ntp_start(){
 }
 
 void ntp_sync(){
+  call_ntp_sync();
+}
+void call_ntp_sync(){
   if(wifi_enabled==true && WiFi.status() != WL_CONNECTED && ntp_enabled==true)
   {
     //get a random server from the pool

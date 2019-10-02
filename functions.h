@@ -24,6 +24,7 @@ void handleFileList();
 void web_setup();
 void wificonfigModeCallback(WiFiManager *myWiFiManager);
 void ntp_sync();
+void call_ntp_sync();
 void ntp_start();
 void sendNTPpacket(IPAddress& address);
 #endif
