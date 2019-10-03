@@ -26,6 +26,7 @@ void wificonfigModeCallback(WiFiManager *myWiFiManager);
 void ntp_sync();
 void call_ntp_sync();
 void ntp_start();
+unsigned long ntp_getTime();
 void sendNTPpacket(IPAddress& address);
 #endif
 #endif /* functions.h */

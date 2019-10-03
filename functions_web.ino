@@ -23,7 +23,6 @@
   edit the page by going to http://esp8266fs.local/edit
 */
 #ifdef BLOWER_CONTROL_WIFI
-
 //format bytes
 String formatBytes(size_t bytes) {
   if (bytes < 1024) {

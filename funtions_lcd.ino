@@ -12,7 +12,7 @@ void run_lcd_control()
           if(lcd_loop_i<=lcd_loop_m)
           {
             lcd_loop[lcd_loop_i] = 500;
-            lcd_loop_delay[lcd_loop_i]=0;
+            lcd_loop_delay[lcd_loop_i]=0+lcd_loop_delay_add;
             lcd_loop_i++;
           }
     }
@@ -20,7 +20,7 @@ void run_lcd_control()
           if(lcd_loop_i<=lcd_loop_m)
           {
             lcd_loop[lcd_loop_i] = 510;
-            lcd_loop_delay[lcd_loop_i]=0; 
+            lcd_loop_delay[lcd_loop_i]=0+lcd_loop_delay_add; 
             lcd_loop_i++;
           }
     }
@@ -30,7 +30,7 @@ void run_lcd_control()
     {
           if(lcd_loop_i<=lcd_loop_m){
             lcd_loop[lcd_loop_i] = 511; 
-            lcd_loop_delay[lcd_loop_i]=0;
+            lcd_loop_delay[lcd_loop_i]=0+lcd_loop_delay_add;
             lcd_loop_i++;
           }
     }
@@ -41,7 +41,7 @@ void run_lcd_control()
           if(lcd_loop_i<=lcd_loop_m)
           {
             lcd_loop[lcd_loop_i] = 512;
-            lcd_loop_delay[lcd_loop_i]=0;
+            lcd_loop_delay[lcd_loop_i]=0+lcd_loop_delay_add;
             lcd_loop_i++;
           }
     }
@@ -52,7 +52,7 @@ void run_lcd_control()
           if(lcd_loop_i<=lcd_loop_m)
           {
             lcd_loop[lcd_loop_i] = 513; 
-            lcd_loop_delay[lcd_loop_i]=0;
+            lcd_loop_delay[lcd_loop_i]=0+lcd_loop_delay_add;
             lcd_loop_i++;
           }
     }
@@ -62,7 +62,7 @@ void run_lcd_control()
     if(lcd_loop_i<=lcd_loop_m)
     {
       lcd_loop[lcd_loop_i] = 400; 
-      lcd_loop_delay[lcd_loop_i]=0;
+      lcd_loop_delay[lcd_loop_i]=0+lcd_loop_delay_add;
       lcd_loop_i++;
     }
   }else if(master_blower_on == true && master_blower_off == false){
@@ -77,7 +77,7 @@ void run_lcd_control()
             if(lcd_loop_i<=lcd_loop_m)
             {
               lcd_loop[lcd_loop_i] = 200; 
-              lcd_loop_delay[lcd_loop_i]=2;
+              lcd_loop_delay[lcd_loop_i]=2+lcd_loop_delay_add;
               lcd_loop_i++;
             }else{
               break;
@@ -88,7 +88,7 @@ void run_lcd_control()
           }
           if(lcd_sensor_i<=lcd_sensor_m)
           {
-            lcd_sensor[lcd_sensor_i]=i;
+            lcd_sensor[lcd_sensor_i]=i+lcd_loop_delay_add;
             lcd_sensor_i++;
           }else{
             break;
@@ -100,7 +100,7 @@ void run_lcd_control()
     if(lcd_loop_i<=lcd_loop_m)
     {
       lcd_loop[lcd_loop_i] = 250; 
-      lcd_loop_delay[lcd_loop_i]=0;
+      lcd_loop_delay[lcd_loop_i]=0+lcd_loop_delay_add;
       lcd_loop_i++;
     }
   }
@@ -110,7 +110,7 @@ void run_lcd_control()
     if(lcd_loop_i<=lcd_loop_m)
     {
       lcd_loop[lcd_loop_i] = 540; 
-      lcd_loop_delay[lcd_loop_i]=0;
+      lcd_loop_delay[lcd_loop_i]=0+lcd_loop_delay_add;
       lcd_loop_i++;
     }
     
@@ -120,7 +120,7 @@ void run_lcd_control()
     if(lcd_loop_i<=lcd_loop_m)
     {
       lcd_loop[lcd_loop_i] = 230; 
-      lcd_loop_delay[lcd_loop_i]=0;
+      lcd_loop_delay[lcd_loop_i]=0+lcd_loop_delay_add;
       lcd_loop_i++;
     }
     
@@ -132,6 +132,16 @@ void run_lcd_draw()
 {
   lcd_d_task_time_start = millis();
   lcd_d_task_time_ran++;
+  if(lcd_loop_c>=lcd_loop_i){
+    lcd_loop_c = 0;
+  }
+  if(lcd_loop[lcd_loop_c] == lcd_screen  && lcd_redraw < LCD_REDRAW_TIMES )
+  {
+      //The screen does not need to be refreshed, increase the re-draw counter and end early
+      lcd_redraw++;
+  }else{
+    lcd_screen = lcd_loop[lcd_loop_c];
+    lcd_redraw = 0;
   // see if the LCD screen needs to be updated or force an update every XX times
         switch(lcd_loop[lcd_loop_c])
         {
@@ -140,6 +150,10 @@ void run_lcd_draw()
             lcd.clear();
             lcd.print("System booting...");
             lcd.createChar(8, lcd_wifi_none);
+            lcd.createChar(4, lcd_exclam_0_0);
+            lcd.createChar(5, lcd_exclam_0_1);
+            lcd.createChar(6, lcd_exclam_1_0);
+            lcd.createChar(7, lcd_exclam_1_1);
             break;
           case 1:
             if(lcd_debug){Serial.println("LCD Screen 1: version number");}
@@ -150,11 +164,21 @@ void run_lcd_draw()
           case 2:
             if(lcd_debug){Serial.println("LCD Screen 2: safty info");}
             lcd.clear();
-            lcd.print("Please read the   ");
+            lcd.write(4);
+            lcd.write(5);
+            lcd.print("Please read the");
             lcd.setCursor(0, 1);
-            lcd.print("manual for safety ");
+            lcd.write(6);
+            lcd.write(7);
+            lcd.print("manual for safety");
             lcd.setCursor(0, 2);
-            lcd.print("information       ");
+            lcd.print("information");
+            lcd.setCursor(18, 2);
+            lcd.write(4);
+            lcd.write(5);
+            lcd.setCursor(18, 3);
+            lcd.write(6);
+            lcd.write(7);
             break;
           case 3:
             if(lcd_debug){Serial.println("LCD Screen 3:bootup screens done, start logic function");}
@@ -165,11 +189,21 @@ void run_lcd_draw()
           case 4:
             if(lcd_debug){Serial.println("LCD Screen 4:blank");}
             lcd.clear();
-            lcd.print("! Please read the   ");
+            lcd.write(4);
+            lcd.write(5);
+            lcd.print("Please read the");
             lcd.setCursor(0, 1);
-            lcd.print("! manual for safety ");
+            lcd.write(6);
+            lcd.write(7);
+            lcd.print("manual for safety");
             lcd.setCursor(0, 2);
-            lcd.print("! information       ");
+            lcd.print("information");
+            lcd.setCursor(18, 2);
+            lcd.write(4);
+            lcd.write(5);
+            lcd.setCursor(18, 3);
+            lcd.write(6);
+            lcd.write(7);
             break;
             
           case 200:
@@ -177,11 +211,7 @@ void run_lcd_draw()
           case 202:
           case 203:
             if(lcd_debug){Serial.println("LCD Screen 200/201:system on and running");}
-            Serial.print("lcd_sensor_c");
-            Serial.println(lcd_sensor_c);
-            Serial.print("lcd_sensor_i");
-            Serial.println(lcd_sensor_i);
-            
+            lcd_screen = 0;  //Force the screen to refresh each loop
             if(lcd_last_sensor_a==0)
             {
               lcd.clear();
@@ -227,13 +257,15 @@ void run_lcd_draw()
               lcd.setCursor(0, 2);
               lcd.print(sensors[lcd_sensor[lcd_sensor_c]].c_name);
               lcd_sensor_c++;
-              if(lcd_sensor_c<=lcd_sensor_i && lcd_sensor_c != 0)
+              if(lcd_sensor_c>=lcd_sensor_i)
+              {
+               lcd_sensor_c = 0; 
+              }
+              if(lcd_sensor_c != 0)
               {
                 lcd.setCursor(0, 3);
                 lcd.print(sensors[lcd_sensor[lcd_sensor_c]].c_name);
                 lcd_sensor_c++;
-              }else{
-               lcd_sensor_c = 0; 
               }
 
             break;
@@ -356,16 +388,17 @@ void run_lcd_draw()
         }
     }
 		#endif
+  }
   if(lcd_loop_c>=lcd_loop_i || lcd_loop_c>=lcd_loop_m)
   {
     lcd_loop_c = 0;
   }else{   
-    //if(lcd_loop_delay[lcd_loop_c]>0)
-    //{
+    if(lcd_loop_delay[lcd_loop_c]=0)
+    {
       lcd_loop_c++;
-    //}else{
-    //  lcd_loop_delay[lcd_loop_c]--;
-    //}
+    }else{
+      lcd_loop_delay[lcd_loop_c]--;
+    }
   }
   lcd_d_task_time_stop = millis();
 }

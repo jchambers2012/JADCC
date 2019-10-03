@@ -271,11 +271,18 @@ void setup() {
   #ifdef BLOWER_CONTROL_WIFI
   if(wifi_enabled == true && ntp_enabled == true)
   {
+    
+    Serial.println("Starting NTP");
     ntp_start();
+    Serial.println("Adding NTP Sync Process");
     ts.addTask(t_ntp_sync);
     t_ntp_sync.enable();   
+    Serial.println("Preforming First Sync");
     call_ntp_sync(); 
+    Serial.println("DONE NTP");
   }
+    Serial.println("Delay 10 sec NTP");
+  delay(10000);
   #endif
   //This controller is complied for 2 controller
   #if defined(BLOWER_CONTROL_BOARDS) && BLOWER_CONTROL_BOARDS >= 2

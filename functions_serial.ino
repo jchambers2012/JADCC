@@ -253,8 +253,41 @@ void run_debug(){
           Serial.println ( ") -  is DISABLED ignoring" );
       }
     }
+  #ifdef BLOWER_CONTROL_WIFI
   Serial.println ( "===========================================" );
+  Serial.println ( "NTP" );  
   Serial.println ( "===========================================" );
+  if(ntp_synced==true)
+  {
+	Serial.print ( "ntp_epoch = " );
+	Serial.println ( ntp_epoch );
+	Serial.print ( "ntp_lastSysnc_esp_time = " );
+	Serial.println ( ntp_lastSysnc_esp_time );
+	Serial.print ( "utcOffsetInSeconds = " );
+	Serial.println ( utcOffsetInSeconds );
+	Serial.print ( "ntp_secsSince1900 = " );
+	Serial.println ( ntp_secsSince1900 );
+	ntp_return_time = ntp_epoch + (millis() - ntp_lastSysnc_esp_time) + utcOffsetInSeconds;
+	Serial.print("ntp_return_time = " );
+ 	Serial.println(ntp_return_time); 
+	
+	      // print the hour, minute and second:
+      Serial.print("The UTC+offset time is ");       // UTC is the time at Greenwich Meridian (GMT)
+      Serial.print((ntp_return_time  % 86400L) / 3600); // print the hour (86400 equals secs per day)
+      Serial.print(':');
+      if (((ntp_return_time % 3600) / 60) < 10) {
+        // In the first 10 minutes of each hour, we'll want a leading '0'
+        Serial.print('0');
+      }
+      Serial.print((ntp_return_time  % 3600) / 60); // print the minute (3600 equals secs per minute)
+      Serial.print(':');
+      if ((ntp_return_time % 60) < 10) {
+        // In the first 10 seconds of each minute, we'll want a leading '0'
+        Serial.print('0');
+      }
+      Serial.println(ntp_return_time % 60); // print the second
   } 
+  #endif
   debug_debug_time = millis()-now;
+}
 }

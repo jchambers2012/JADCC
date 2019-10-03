@@ -15,11 +15,12 @@ unsigned long debug_debug_time, debug_debug_ran ; //Track the time each function
 unsigned long debug_debug_times[10];
 unsigned long system_loop_start,system_loop_total,system_loop_run,system_loop_max; //Track the time each function takes to run
 
-bool lcd_debug = false;
-int lcd_loop[10]=       {0,1,2,3,4,0,0,0,0,0};
-byte lcd_loop_delay[10]={0,0,4,0,0,0,0,0,0,0};
+bool lcd_debug = true;
+int lcd_loop[10]=       {0,1,2 ,3,4,0,0,0,0,0};  //First 5 Screens. Screen 4 will start the control processes
+byte lcd_loop_delay[10]={0,2,10,2,0,0,0,0,0,0};  //Will delay the LCD display from moving onto the next screen
 byte lcd_loop_i = 5;
 byte lcd_loop_c = 0;
+byte lcd_loop_delay_add = 1;
 const byte lcd_loop_m = 5;
 int lcd_sensor[10]={0,0,0,0,0,0,0,0,0};
 byte lcd_sensor_i = 0;
@@ -45,8 +46,10 @@ int lcd_screen_delay = 0;
 bool lcd_wifi = false;
 //byte lcd_wifi_none[8] ={0b01010,0b00100,0b01010,0b00000,0b10001,0b10001,0b11111,0b01110};// Router with an x
 byte lcd_wifi_none[8] = { 0b10100, 0b01000, 0b10100, 0b00001, 0b00011, 0b00111, 0b01111, 0b11111}; //Bars with an x
-//char lcd_error[2][20] = "";
-
+byte lcd_exclam_0_0[8] = {0,15,15,15,7,7,3,3};
+byte lcd_exclam_0_1[8] = {0,30,30,30,28,28,24,24};
+byte lcd_exclam_1_0[8] = {3,3,1,1,1,0,1,1};
+byte lcd_exclam_1_1[8] = {24,24,16,16,16,0,16,16};
 
 typedef struct {
   bool enable = true;               //Should the sensor even be checked
@@ -152,7 +155,14 @@ const char* ntpServerName = "time.nist.gov";
 const int NTP_PACKET_SIZE = 48; // NTP time stamp is in the first 48 bytes of the message
 byte packetBuffer[ NTP_PACKET_SIZE]; //buffer to hold incoming and outgoing packets
 WiFiUDP ntp_udp;
-bool ntp_enabled = true;
+bool ntp_enabled = false;
+bool ntp_synced = false;
+unsigned long ntp_lastSysnc_time = 0;
+unsigned long ntp_lastSysnc_time_ms = 0;
+unsigned long ntp_lastSysnc_esp_time = 0;
+unsigned long ntp_secsSince1900 = 0;
+unsigned long ntp_epoch = 0;
+unsigned long ntp_return_time=0;
 long utcOffsetInSeconds = -18000;
 #endif
 

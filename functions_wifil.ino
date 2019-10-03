@@ -88,16 +88,37 @@ void sendNTPpacket(IPAddress& address) {
   ntp_udp.endPacket();
 }
 void ntp_start(){
-  if(wifi_enabled==true)
-  {
+    Serial.println("called ntp_start()");
     ntp_udp.begin(ntp_localPort);
     Serial.print("Local port: ");
     Serial.println(ntp_udp.localPort());
-  }
 }
 
 void ntp_sync(){
-  call_ntp_sync();
+    Serial.println("calling call_ntp_sync()");
+    call_ntp_sync();
+}
+unsigned long ntp_getTime(){
+	ntp_return_time=0;
+	ntp_return_time = ntp_epoch + (millis() - ntp_lastSysnc_esp_time) + utcOffsetInSeconds;
+	Serial.print("return_time = " );
+ 	Serial.println(ntp_return_time); 
+	
+	      // print the hour, minute and second:
+      Serial.print("The UTC+offset time is ");       // UTC is the time at Greenwich Meridian (GMT)
+      Serial.print((ntp_return_time  % 86400L) / 3600); // print the hour (86400 equals secs per day)
+      Serial.print(':');
+      if (((ntp_return_time % 3600) / 60) < 10) {
+        // In the first 10 minutes of each hour, we'll want a leading '0'
+        Serial.print('0');
+      }
+      Serial.print((ntp_return_time  % 3600) / 60); // print the minute (3600 equals secs per minute)
+      Serial.print(':');
+      if ((ntp_return_time % 60) < 10) {
+        // In the first 10 seconds of each minute, we'll want a leading '0'
+        Serial.print('0');
+      }
+      Serial.println(ntp_return_time % 60); // print the second
 }
 void call_ntp_sync(){
   if(wifi_enabled==true && WiFi.status() != WL_CONNECTED && ntp_enabled==true)
@@ -113,6 +134,8 @@ void call_ntp_sync(){
     if (!cb) {
       Serial.println("no packet yet");
     } else {
+	  ntp_lastSysnc_esp_time = millis();
+	  ntp_synced = true;
       Serial.print("packet received, length=");
       Serial.println(cb);
       // We've received a packet, read the data from it
@@ -125,36 +148,45 @@ void call_ntp_sync(){
       unsigned long lowWord = word(packetBuffer[42], packetBuffer[43]);
       // combine the four bytes (two words) into a long integer
       // this is NTP time (seconds since Jan 1 1900):
-      unsigned long secsSince1900 = highWord << 16 | lowWord;
+      ntp_secsSince1900 = highWord << 16 | lowWord;
       Serial.print("Seconds since Jan 1 1900 = ");
-      Serial.println(secsSince1900);
-  
+      Serial.println(ntp_secsSince1900);
       // now convert NTP time into everyday time:
       Serial.print("Unix time = ");
       // Unix time starts on Jan 1 1970. In seconds, that's 2208988800:
       const unsigned long seventyYears = 2208988800UL;
       // subtract seventy years:
-      unsigned long epoch = secsSince1900 - seventyYears;
+      unsigned long ntp_epoch = ntp_secsSince1900 - seventyYears;
       // print Unix time:
-      Serial.println(epoch);
+      Serial.println(ntp_epoch);
   
   
       // print the hour, minute and second:
       Serial.print("The UTC time is ");       // UTC is the time at Greenwich Meridian (GMT)
-      Serial.print((epoch  % 86400L) / 3600); // print the hour (86400 equals secs per day)
+      Serial.print((ntp_epoch  % 86400L) / 3600); // print the hour (86400 equals secs per day)
       Serial.print(':');
-      if (((epoch % 3600) / 60) < 10) {
+      if (((ntp_epoch % 3600) / 60) < 10) {
         // In the first 10 minutes of each hour, we'll want a leading '0'
         Serial.print('0');
       }
-      Serial.print((epoch  % 3600) / 60); // print the minute (3600 equals secs per minute)
+      Serial.print((ntp_epoch  % 3600) / 60); // print the minute (3600 equals secs per minute)
       Serial.print(':');
-      if ((epoch % 60) < 10) {
+      if ((ntp_epoch % 60) < 10) {
         // In the first 10 seconds of each minute, we'll want a leading '0'
         Serial.print('0');
       }
-      Serial.println(epoch % 60); // print the second
+      Serial.println(ntp_epoch % 60); // print the second
     }
+  }else{
+    //wifi_enabled==true && WiFi.status() != WL_CONNECTED && ntp_enabled==true
+      Serial.print("wifi_enabled = ");
+      Serial.println(wifi_enabled);
+      Serial.print(" WiFi.status() = ");
+      Serial.println( WiFi.status());
+      Serial.print(" WL_CONNECTED = ");
+      Serial.println(WL_CONNECTED);
+      Serial.print(" ntp_enabled = ");
+      Serial.println( ntp_enabled);
   }
 }
 #endif
