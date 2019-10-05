@@ -43,17 +43,21 @@ void run_blower_control(){
       Serial.println ( "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" );
       Serial.println ( "Setting Motot to STOP" );
       Serial.println ( "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" );
+      digitalWrite(RELAY_LED_RED, MOTOR_STOP);
+      digitalWrite(RELAY_LED_GREEN, !MOTOR_STOP);
       do_motor_control(MOTOR_STOP);
     }
-  }else if(master_blower_on == false && motor_sent_state == MOTOR_START)
+  }else if(master_blower_on == false && motor_sent_state == MOTOR_STOP)
   {
     motor_logic_state = MOTOR_STOP;  // the LOGIC thinks the motor should be STOPPED, save this state to verify that the stop command has been issued
     if(motor_logic_state != motor_sent_state || motor_force_state == true)
     {
       //motor state mismatch, run the motor control function 
       Serial.println ( "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" );
-      Serial.println ( "Setting Motot to STOP" );
+      Serial.println ( "Setting Motot to STOP - Standby" );
       Serial.println ( "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" );
+      digitalWrite(RELAY_LED_RED, !MOTOR_STOP);
+      digitalWrite(RELAY_LED_GREEN, MOTOR_STOP);
       do_motor_control(MOTOR_STOP);
     }
   }else if(master_blower_on == true)
@@ -65,6 +69,8 @@ void run_blower_control(){
       Serial.println ( "+++++++++++++++++++++++++++++++++++++++++++" );
       Serial.println ( "Setting Motot to started" );
       Serial.println ( "+++++++++++++++++++++++++++++++++++++++++++" );
+      digitalWrite(RELAY_LED_RED, !MOTOR_STOP);
+      digitalWrite(RELAY_LED_GREEN, MOTOR_STOP);
       do_motor_control(MOTOR_START);
     }
   }
@@ -77,8 +83,6 @@ void run_blower_control(){
 //This funtion will prefrom the needed steps to turn on/off the motor
 void do_motor_control(bool toState)
 {
-  digitalWrite(RELAY_LED_RED, toState);
-  digitalWrite(RELAY_LED_GREEN, !toState);
   //Logic to stop the motor here
   if(motor_ir ==true)
   {

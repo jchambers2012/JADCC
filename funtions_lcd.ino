@@ -389,16 +389,16 @@ void run_lcd_draw()
     }
 		#endif
   }
-  if(lcd_loop_c>=lcd_loop_i || lcd_loop_c>=lcd_loop_m)
-  {
-    lcd_loop_c = 0;
-  }else{   
-    if(lcd_loop_delay[lcd_loop_c]=0)
-    {
+  //if(lcd_loop_c>=lcd_loop_i || lcd_loop_c>=lcd_loop_m)
+  //{
+  //  lcd_loop_c = 0;
+  //}else{   
+  //  if(lcd_loop_delay[lcd_loop_c]=0)
+  //  {
       lcd_loop_c++;
-    }else{
-      lcd_loop_delay[lcd_loop_c]--;
-    }
-  }
+  //  }else{
+  //    lcd_loop_delay[lcd_loop_c]--;
+  //  }
+  //}
   lcd_d_task_time_stop = millis();
 }
