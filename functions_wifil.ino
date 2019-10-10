@@ -44,149 +44,66 @@ void wifi_save_config () {
   }
 }
 
-/*
 
-  ntp_udp NTP Client
+// Minimal NTP Time Demo with DST correction
+//
+// Uses built-in ESP8266 LWIP sntp library to get time
+// https://github.com/neptune2/simpleDSTadjust
 
-  Get the time from a Network Time Protocol (NTP) time server
-  Demonstrates use of ntp_udp sendPacket and ReceivePacket
-  For more on NTP time servers and the messages needed to communicate with them,
-  see http://en.wikipedia.org/wiki/Network_Time_Protocol
 
-  created 4 Sep 2010
-  by Michael Margolis
-  modified 9 Apr 2012
-  by Tom Igoe
-  updated for the ESP8266 12 Apr 2015
-  by Ivan Grokhotkov
+void setup_ntp(){
+  updateNTP(); // Init the NTP time
+  printTime(0); // print initial time time now.
 
-  This code is in the public domain.
-
-*/
-
-// send an NTP request to the time server at the given address
-void sendNTPpacket(IPAddress& address) {
-  Serial.println("sending NTP packet...");
-  // set all bytes in the buffer to 0
-  memset(packetBuffer, 0, NTP_PACKET_SIZE);
-  // Initialize values needed to form NTP request
-  // (see URL above for details on the packets)
-  packetBuffer[0] = 0b11100011;   // LI, Version, Mode
-  packetBuffer[1] = 0;     // Stratum, or type of clock
-  packetBuffer[2] = 6;     // Polling Interval
-  packetBuffer[3] = 0xEC;  // Peer Clock Precision
-  // 8 bytes of zero for Root Delay & Root Dispersion
-  packetBuffer[12]  = 49;
-  packetBuffer[13]  = 0x4E;
-  packetBuffer[14]  = 49;
-  packetBuffer[15]  = 52;
-
-  // all NTP fields have been given values, now
-  // you can send a packet requesting a timestamp:
-  ntp_udp.beginPacket(address, 123); //NTP requests are to port 123
-  ntp_udp.write(packetBuffer, NTP_PACKET_SIZE);
-  ntp_udp.endPacket();
-}
-void ntp_start(){
-    Serial.println("called ntp_start()");
-    ntp_udp.begin(ntp_localPort);
-    Serial.print("Local port: ");
-    Serial.println(ntp_udp.localPort());
+  tick = NTP_UPDATE_INTERVAL_SEC; // Init the NTP update countdown ticker
+  ticker1.attach(1, secTicker); // Run a 1 second interval Ticker
+  Serial.print("Next NTP Update: ");
+  printTime(tick);
 }
 
-void ntp_sync(){
-    Serial.println("calling call_ntp_sync()");
-    call_ntp_sync();
+// NTP timer update ticker
+void secTicker()
+{
+  tick--;
+  if(tick<=0)
+   {
+    readyForNtpUpdate = true;
+    tick= NTP_UPDATE_INTERVAL_SEC; // Re-arm
+   }
+
+   //printTime(0);  // Uncomment if you want to see time printed every second
 }
-unsigned long ntp_getTime(){
-	ntp_return_time=0;
-	ntp_return_time = ntp_epoch + (millis() - ntp_lastSysnc_esp_time) + utcOffsetInSeconds;
-	Serial.print("return_time = " );
- 	Serial.println(ntp_return_time); 
-	
-	      // print the hour, minute and second:
-      Serial.print("The UTC+offset time is ");       // UTC is the time at Greenwich Meridian (GMT)
-      Serial.print((ntp_return_time  % 86400L) / 3600); // print the hour (86400 equals secs per day)
-      Serial.print(':');
-      if (((ntp_return_time % 3600) / 60) < 10) {
-        // In the first 10 minutes of each hour, we'll want a leading '0'
-        Serial.print('0');
-      }
-      Serial.print((ntp_return_time  % 3600) / 60); // print the minute (3600 equals secs per minute)
-      Serial.print(':');
-      if ((ntp_return_time % 60) < 10) {
-        // In the first 10 seconds of each minute, we'll want a leading '0'
-        Serial.print('0');
-      }
-      Serial.println(ntp_return_time % 60); // print the second
-}
-void call_ntp_sync(){
-  if(wifi_enabled==true && WiFi.status() != WL_CONNECTED && ntp_enabled==true)
-  {
-    //get a random server from the pool
-    WiFi.hostByName(ntpServerName, timeServerIP);
-  
-    sendNTPpacket(timeServerIP); // send an NTP packet to a time server
-    // wait to see if a reply is available
+
+
+void updateNTP() {
+  byte i_break = 10;
+  configTime(timezone * 3600, 0, NTP_SERVERS);
+
+  delay(500);
+  while (!time(nullptr)) {
+    Serial.print("#");
     delay(1000);
-  
-    int cb = ntp_udp.parsePacket();
-    if (!cb) {
-      Serial.println("no packet yet");
-    } else {
-	  ntp_lastSysnc_esp_time = millis();
-	  ntp_synced = true;
-      Serial.print("packet received, length=");
-      Serial.println(cb);
-      // We've received a packet, read the data from it
-      ntp_udp   .read(packetBuffer, NTP_PACKET_SIZE); // read the packet into the buffer
-  
-      //the timestamp starts at byte 40 of the received packet and is four bytes,
-      // or two words, long. First, esxtract the two words:
-  
-      unsigned long highWord = word(packetBuffer[40], packetBuffer[41]);
-      unsigned long lowWord = word(packetBuffer[42], packetBuffer[43]);
-      // combine the four bytes (two words) into a long integer
-      // this is NTP time (seconds since Jan 1 1900):
-      ntp_secsSince1900 = highWord << 16 | lowWord;
-      Serial.print("Seconds since Jan 1 1900 = ");
-      Serial.println(ntp_secsSince1900);
-      // now convert NTP time into everyday time:
-      Serial.print("Unix time = ");
-      // Unix time starts on Jan 1 1970. In seconds, that's 2208988800:
-      const unsigned long seventyYears = 2208988800UL;
-      // subtract seventy years:
-      unsigned long ntp_epoch = ntp_secsSince1900 - seventyYears;
-      // print Unix time:
-      Serial.println(ntp_epoch);
-  
-  
-      // print the hour, minute and second:
-      Serial.print("The UTC time is ");       // UTC is the time at Greenwich Meridian (GMT)
-      Serial.print((ntp_epoch  % 86400L) / 3600); // print the hour (86400 equals secs per day)
-      Serial.print(':');
-      if (((ntp_epoch % 3600) / 60) < 10) {
-        // In the first 10 minutes of each hour, we'll want a leading '0'
-        Serial.print('0');
-      }
-      Serial.print((ntp_epoch  % 3600) / 60); // print the minute (3600 equals secs per minute)
-      Serial.print(':');
-      if ((ntp_epoch % 60) < 10) {
-        // In the first 10 seconds of each minute, we'll want a leading '0'
-        Serial.print('0');
-      }
-      Serial.println(ntp_epoch % 60); // print the second
+    i_break--;
+    if(i_break==0){
+      ntp_synced=false;
+      break;
     }
-  }else{
-    //wifi_enabled==true && WiFi.status() != WL_CONNECTED && ntp_enabled==true
-      Serial.print("wifi_enabled = ");
-      Serial.println(wifi_enabled);
-      Serial.print(" WiFi.status() = ");
-      Serial.println( WiFi.status());
-      Serial.print(" WL_CONNECTED = ");
-      Serial.println(WL_CONNECTED);
-      Serial.print(" ntp_enabled = ");
-      Serial.println( ntp_enabled);
   }
+  ntp_synced=true;
 }
+
+
+void printTime(time_t offset)
+{
+  char buf[30];
+  char *dstAbbrev;
+  time_t t = dstAdjusted.time(&dstAbbrev)+offset;
+  struct tm *timeinfo = localtime (&t);
+  
+  int hour = (timeinfo->tm_hour+11)%12+1;  // take care of noon and midnight
+  sprintf(buf, "%02d/%02d/%04d %02d:%02d:%02d%s %s\n",timeinfo->tm_mon+1, timeinfo->tm_mday, timeinfo->tm_year+1900, hour, timeinfo->tm_min, timeinfo->tm_sec, timeinfo->tm_hour>=12?"pm":"am", dstAbbrev);
+  Serial.print(buf);
+}
+
+
 #endif

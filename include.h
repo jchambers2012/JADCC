@@ -17,6 +17,9 @@
 #include <ArduinoJson.h>          //https://github.com/bblanchon/ArduinoJson
 #include <LiquidCrystal_I2C.h>
 #include <RCSwitch.h>
+#include <Ticker.h>
+#include <time.h>
+#include <simpleDSTadjust.h>
 #include <WiFiUdp.h>
 #include "variable.h"
 #include "functions.h"

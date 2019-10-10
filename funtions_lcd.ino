@@ -270,7 +270,7 @@ void run_lcd_draw()
 
             break;
           case 230:
-            if(lcd_debug){Serial.println("LCD Screen 250:system in standby");}
+            if(lcd_debug){Serial.println("LCD Screen 230:Time Screen");}
             lcd.clear();
             lcd.print("TIME INFO");
             lcd.setCursor(0, 1);
@@ -279,6 +279,10 @@ void run_lcd_draw()
             lcd.print(BLOWER_VERSION);
             lcd.setCursor(0, 3);
             lcd.print("Press Red to disable");
+              //char buf[30];  char *dstAbbrev;  time_t t = dstAdjusted.time(&dstAbbrev)+offset;  struct tm *timeinfo = localtime (&t);
+              //int hour = (timeinfo->tm_hour+11)%12+1;  // take care of noon and midnight
+              //sprintf(buf, "%02d/%02d/%04d %02d:%02d:%02d%s %s\n",timeinfo->tm_mon+1, timeinfo->tm_mday, timeinfo->tm_year+1900, hour, timeinfo->tm_min, timeinfo->tm_sec, timeinfo->tm_hour>=12?"pm":"am", dstAbbrev);
+              //Serial.print(buf);
             break;
           case 250:
             if(lcd_debug){Serial.println("LCD Screen 250:system in standby");}

@@ -11,6 +11,7 @@ void read_button_black();
 void read_button_blue();
 void read_button_yellow();
 void run_debug();
+void run_chip_dump();
 
 #ifdef BLOWER_CONTROL_WIFI
 //WEB SERVER FUNCTIONS
@@ -23,10 +24,9 @@ void handleFileCreate();
 void handleFileList();
 void web_setup();
 void wificonfigModeCallback(WiFiManager *myWiFiManager);
-void ntp_sync();
-void call_ntp_sync();
-void ntp_start();
-unsigned long ntp_getTime();
-void sendNTPpacket(IPAddress& address);
+void setup_ntp();
+void printTime(time_t offset);
+void updateNTP();
+void secTicker();
 #endif
 #endif /* functions.h */

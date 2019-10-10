@@ -1,3 +1,19 @@
+void run_chip_dump(){
+  Serial.printf("Core Version: %s\n", ESP.getCoreVersion().c_str());
+  Serial.printf("CPU Frequency: %u MHz\n", ESP.getCpuFreqMHz());
+  Serial.printf("Reset reason: %s\n", ESP.getResetReason().c_str());
+  Serial.print("ESP.getBootMode(); ");Serial.println(ESP.getBootMode());
+  Serial.print("ESP.getSdkVersion(); ");Serial.println(ESP.getSdkVersion());
+  Serial.print("ESP.getBootVersion(); ");Serial.println(ESP.getBootVersion());
+  Serial.print("ESP.getChipId(); ");Serial.println(ESP.getChipId());
+  Serial.print("ESP.getFlashChipSize(); ");Serial.println(ESP.getFlashChipSize());
+  Serial.print("ESP.getFlashChipRealSize(); ");Serial.println(ESP.getFlashChipRealSize());
+  Serial.print("ESP.getFlashChipSizeByChipId(); ");Serial.println(ESP.getFlashChipSizeByChipId());
+  Serial.print("ESP.getFlashChipId(); ");Serial.println(ESP.getFlashChipId());
+  Serial.print("ESP.getFreeHeap(); ");Serial.println(ESP.getFreeHeap());
+}
+
+
 
 //This funtion will control the logic on weather the blower should be on of off
 void run_debug(){
@@ -7,6 +23,7 @@ void run_debug(){
   debug_debug_ran++;
   //Current state of the logic flags, set by the GPIO control
   if(debug_debug){
+    run_chip_dump();
     Serial.println ( "===========================================" );
     Serial.println ( "Timing:" );
     Serial.println ( "===========================================" );
@@ -151,10 +168,9 @@ void run_debug(){
     Serial.print ( gpio_button_green.current );
     Serial.print ( " - Held for = " );
     Serial.println ( gpio_button_green.time_total );
-    Serial.println ( gpio_button_green.time_on );
-    Serial.println ( gpio_button_green.time_off );
-    Serial.println ( gpio_button_green.processed_h );
-    Serial.println ( gpio_button_green.processed_l );
+    //Serial.println ( gpio_button_green.time_on );
+    //Serial.println ( gpio_button_green.time_off );
+    //Serial.println ( gpio_button_green.processed_h );
     Serial.println ( "===========================================" );
     Serial.print ( " - lcd_loop_c = " );
     Serial.println ( lcd_loop_c );
@@ -163,12 +179,13 @@ void run_debug(){
     Serial.print ( " - lcd_loop[lcd_loop_c] = " );
     Serial.println ( lcd_loop[lcd_loop_c] );
     Serial.print ( " - lcd_loop[] = " );
-    for (int i = 0; i <= lcd_loop_m; i++) {
+    for (int i = 0; i <= lcd_loop_i; i++) {
       Serial.print ( lcd_loop[i] );
       Serial.print ( " (delay " );
       Serial.print ( lcd_loop_delay[i] );
-      Serial.println ( ") " );
+      Serial.print ( "), " );
     }
+      Serial.println ( );
     Serial.println ( "===========================================" );
     Serial.print ( " - gpio_max_read = " );
     Serial.println ( gpio_max_read );
@@ -257,36 +274,10 @@ void run_debug(){
   Serial.println ( "===========================================" );
   Serial.println ( "NTP" );  
   Serial.println ( "===========================================" );
-  if(ntp_synced==true)
-  {
-	Serial.print ( "ntp_epoch = " );
-	Serial.println ( ntp_epoch );
-	Serial.print ( "ntp_lastSysnc_esp_time = " );
-	Serial.println ( ntp_lastSysnc_esp_time );
-	Serial.print ( "utcOffsetInSeconds = " );
-	Serial.println ( utcOffsetInSeconds );
-	Serial.print ( "ntp_secsSince1900 = " );
-	Serial.println ( ntp_secsSince1900 );
-	ntp_return_time = ntp_epoch + (millis() - ntp_lastSysnc_esp_time) + utcOffsetInSeconds;
-	Serial.print("ntp_return_time = " );
- 	Serial.println(ntp_return_time); 
-	
-	      // print the hour, minute and second:
-      Serial.print("The UTC+offset time is ");       // UTC is the time at Greenwich Meridian (GMT)
-      Serial.print((ntp_return_time  % 86400L) / 3600); // print the hour (86400 equals secs per day)
-      Serial.print(':');
-      if (((ntp_return_time % 3600) / 60) < 10) {
-        // In the first 10 minutes of each hour, we'll want a leading '0'
-        Serial.print('0');
-      }
-      Serial.print((ntp_return_time  % 3600) / 60); // print the minute (3600 equals secs per minute)
-      Serial.print(':');
-      if ((ntp_return_time % 60) < 10) {
-        // In the first 10 seconds of each minute, we'll want a leading '0'
-        Serial.print('0');
-      }
-      Serial.println(ntp_return_time % 60); // print the second
-  } 
+  printTime(0);  
+  Serial.print("Next NTP Update: ");
+  printTime(tick);
+  Serial.println ( "===========================================" );
   #endif
   debug_debug_time = millis()-now;
 }

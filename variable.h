@@ -1,11 +1,14 @@
 #ifndef BLOWERCONTROLLER_VARIABLE_H
 #define BLOWERCONTROLLER_VARIABLE_H
 
-#define BLOWER_VERSION "0.10 BETA"
+#define BLOWER_VERSION "0.11 BETA"
 
 Scheduler ts, cts; 
 
 RCSwitch motorRF = RCSwitch();
+
+struct dstRule StartRule = {"EDT", Second, Sun, Mar, 2, 3600};    // Daylight time = UTC/GMT -4 hours
+struct dstRule EndRule = {"EST", First, Sun, Nov, 2, 0};       // Standard time = UTC/GMT -5 hour
 
 bool shouldSaveConfig = false;    //flag for saving data
 
@@ -155,16 +158,24 @@ const char* ntpServerName = "time.nist.gov";
 const int NTP_PACKET_SIZE = 48; // NTP time stamp is in the first 48 bytes of the message
 byte packetBuffer[ NTP_PACKET_SIZE]; //buffer to hold incoming and outgoing packets
 WiFiUDP ntp_udp;
-bool ntp_enabled = false;
+bool ntp_enabled = true;
 bool ntp_synced = false;
-unsigned long ntp_lastSysnc_time = 0;
-unsigned long ntp_lastSysnc_time_ms = 0;
-unsigned long ntp_lastSysnc_esp_time = 0;
-unsigned long ntp_secsSince1900 = 0;
-unsigned long ntp_epoch = 0;
-unsigned long ntp_return_time=0;
-long utcOffsetInSeconds = -18000;
+
+Ticker ticker1;
+int32_t tick;
+
+// flag changed in the ticker function to start NTP Update
+bool readyForNtpUpdate = false;
+
+// Setup simpleDSTadjust Library rules
+simpleDSTadjust dstAdjusted(StartRule, EndRule);
+
 #endif
+
+
+//FS VAr
+bool isFSMounted = 
+
 
 
 #define MOTOR_STOP false
@@ -177,4 +188,5 @@ long utcOffsetInSeconds = -18000;
 #define GPIO_IR D0
 #define GPIO_B1 D8
 #define GPIO_B2 A0
+
 #endif /* VARIABLE_H */

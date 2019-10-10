@@ -32,11 +32,8 @@ Task t_run_lcd_draw(lcd_d_task_time, TASK_FOREVER, &run_lcd_draw);
 
 Task t_run_debug(debug_debug_task_time, TASK_FOREVER, &run_debug);
 
-#ifdef BLOWER_CONTROL_WIFI
-Task t_ntp_sync(10000, TASK_FOREVER, &ntp_sync);
-#endif
-
 void setup() {
+  ESP.wdtEnable(WDTO_8S);
   pinMode(RELAY_F1, OUTPUT);
   digitalWrite(RELAY_F1, false);  
   pinMode(RELAY_F2, OUTPUT);
@@ -54,14 +51,15 @@ void setup() {
   lcd.home();
   lcd.print("System Starting...");
   Serial.begin ( 115200 );
-  Serial.print ( "Blower Controller Version: " );
+  Serial.print ( F("Blower Controller Version: ") );
   Serial.println ( BLOWER_VERSION );
-  Serial.println ( "Created By Jason Chambers" );
-  Serial.println ( "Warning - This device does not contain any Emergency Control or Fail-Safe Functions. This device should not be used as a life safety system." );
-
+  Serial.println ( F("Created By Jason Chambers") );
+  Serial.println ( F("Warning - This device does not contain any Emergency Control or Fail-Safe Functions. This device should not be used as a life safety system.") );
+  run_chip_dump();
   #ifdef BLOWER_CONTROL_WIFI
   lcd.clear();
   lcd.print("Starting WiFi");
+  wdt_disable();
   //WiFiManager
   //Local intialization. Once its business is done, there is no need to keep it around
   WiFiManager wifiManager;
@@ -80,6 +78,7 @@ void setup() {
     lcd.print("Failed to connect");
     delay(5000);
   }
+  wdt_enable(WDTO_8S);
   if(WiFi.SSID().length()>0)
   {
     //if you get here you have connected to the WiFi
@@ -110,7 +109,7 @@ void setup() {
 
   #endif
 
-  
+  ESP.wdtFeed();
   #ifdef BLOWERCONTROLLER_DEBUG
   Serial.print ( "Zones Enabled: " );
   Serial.println ( sensors_zone_num );
@@ -133,7 +132,7 @@ void setup() {
   Serial.println("Scheduler INIT");
   #endif
 
-
+  ESP.wdtFeed();
   #ifdef BLOWERCONTROLLER_DEBUG
   Serial.println("Initialized Critical scheduler");
   #endif
@@ -160,7 +159,7 @@ void setup() {
   Serial.println("Started t_run_blower_control task");
   #endif
 
-   
+  ESP.wdtFeed();
   #ifdef BLOWERCONTROLLER_DEBUG
   Serial.println("Initialized normal scheduler");
   #endif
@@ -191,9 +190,8 @@ void setup() {
   #ifdef BLOWERCONTROLLER_DEBUG
   Serial.println("++++++++++++++++++++++++++++++++++++++++");
   #endif
-  //clean FS, for testing
-  //SPIFFS.format();
-
+  ESP.wdtFeed();
+  
   //Set the default names for each sensor. The full name is staored in variable.h
   //This will be overritten by the config.json file (if found)
   sensors[0].c_name[8]='1';sensors[0].c_name[11]='1';
@@ -229,10 +227,21 @@ void setup() {
   sensors[30].c_name[8]='6';sensors[30].c_name[11]='5';
   #endif
 
+  //clean FS, for testing
+  //wdt_disable();
+  //SPIFFS.format();
+  //wdt_enable(BLOWER_WDT);
   //read configuration from FS json
   Serial.println("Mounting FS...");
-
-  if (SPIFFS.begin()) {
+  isFSMounted = SPIFFS.begin();
+    if (!isFSMounted) {
+    Serial.println("Formatting file system...");
+    wdt_disable();
+    SPIFFS.format();
+    wdt_enable(WDTO_8S);
+  }
+  ESP.wdtFeed();
+  if (isFSMounted) {
     Serial.println("Mounted file system");
     if (SPIFFS.exists("/config.json")) {
       //file exists, reading and loading
@@ -249,6 +258,7 @@ void setup() {
         JsonObject& json = jsonBuffer.parseObject(buf.get());
         json.printTo(Serial);
         if (json.success()) {
+          ESP.wdtFeed();
           Serial.println("\nparsed json");
 
           //strcpy(mqtt_server, json["mqtt_server"]);
@@ -256,7 +266,7 @@ void setup() {
           //strcpy(blynk_token, json["blynk_token"]);
 
         } else {
-          Serial.println("failed to load json config");
+          Serial.println("failed to load json config, defaults will be used");
         }
         configFile.close();
       }
@@ -264,25 +274,19 @@ void setup() {
       Serial.println("config.json missing, defaults will be used");
     }
   } else {
-    Serial.println("failed to mount FS");
+    Serial.println("failed to mount FS, defaults will be used");
   }
 
 
+  ESP.wdtFeed();
   #ifdef BLOWER_CONTROL_WIFI
   if(wifi_enabled == true && ntp_enabled == true)
   {
     
     Serial.println("Starting NTP");
-    ntp_start();
-    Serial.println("Adding NTP Sync Process");
-    ts.addTask(t_ntp_sync);
-    t_ntp_sync.enable();   
-    Serial.println("Preforming First Sync");
-    call_ntp_sync(); 
+    setup_ntp();
     Serial.println("DONE NTP");
   }
-    Serial.println("Delay 10 sec NTP");
-  delay(10000);
   #endif
   //This controller is complied for 2 controller
   #if defined(BLOWER_CONTROL_BOARDS) && BLOWER_CONTROL_BOARDS >= 2
@@ -320,6 +324,8 @@ void setup() {
 	  gpio_max_read = 31;  //Incease the number of sensor that should be read by the system
 	}
   #endif
+  
+  ESP.wdtFeed();
   if(motor_rf)
   {
     Serial.println("Starting the RF TX");
@@ -359,9 +365,11 @@ void setup() {
   sensors[13].f1 = true;
   //master_stop = false;
 
+  ESP.wdtFeed();
   #ifdef BLOWER_CONTROL_WIFI
   web_setup();
   #endif
+  wdt_enable(WDTO_8S);
 }
 
 
@@ -373,6 +381,17 @@ void loop() {
   #ifdef BLOWER_CONTROL_WIFI
   server.handleClient();
   MDNS.update();
+  if(readyForNtpUpdate  && motor_logic_state==MOTOR_STOP)
+   {
+    //Only Update the NTP when the motor is offline and GPIO pulling can be delayed.
+    readyForNtpUpdate = false;
+    printTime(0);
+    updateNTP();
+    Serial.print("\nUpdated time from NTP Server: ");
+    printTime(0);
+    Serial.print("Next NTP Update: ");
+    printTime(tick);
+  }
   #endif
 
   if(system_loop_total>system_loop_max)
@@ -400,4 +419,5 @@ void loop() {
     motor_task_time_max = motor_task_time_stop-motor_task_time_start;
   } 
   system_loop_total = millis()-system_loop_start;
+  //ESP.wdtFeed();
 }
