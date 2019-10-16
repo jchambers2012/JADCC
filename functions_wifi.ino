@@ -1,4 +1,27 @@
 #ifdef BLOWER_CONTROL_WIFI
+
+void wifi_setup(){
+  //WiFiManager
+  //Local intialization. Once its business is done, there is no need to keep it around
+  WiFiManager wifiManager;
+
+  //reset settings - for testing
+  //wifiManager.resetSettings();
+  wifiManager.setAPCallback(wificonfigModeCallback);
+  wifiManager.setConfigPortalTimeout(30);
+  lcd.setCursor(0, 1);
+  lcd.print("Connecting to SSID");
+  lcd.setCursor(0, 2);    
+  lcd.print( WiFi.SSID() );
+  if (!wifiManager.autoConnect("BlowerConfig")) {
+    Serial.println("failed to connect and hit timeout");
+    lcd.setCursor(0, 2);
+    lcd.print("Failed to connect");
+    delay(5000);
+  }
+}
+
+
 void wificonfigModeCallback(WiFiManager *myWiFiManager){
   Serial.println("Entered config mode");
   Serial.println(WiFi.softAPIP());

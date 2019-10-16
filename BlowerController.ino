@@ -60,24 +60,8 @@ void setup() {
   lcd.clear();
   lcd.print("Starting WiFi");
   wdt_disable();
-  //WiFiManager
-  //Local intialization. Once its business is done, there is no need to keep it around
-  WiFiManager wifiManager;
+  wifi_setup();
 
-  //reset settings - for testing
-  //wifiManager.resetSettings();
-  wifiManager.setAPCallback(wificonfigModeCallback);
-  wifiManager.setConfigPortalTimeout(30);
-  lcd.setCursor(0, 1);
-  lcd.print("Connecting to SSID");
-  lcd.setCursor(0, 2);    
-  lcd.print( WiFi.SSID() );
-  if (!wifiManager.autoConnect("BlowerConfig")) {
-    Serial.println("failed to connect and hit timeout");
-    lcd.setCursor(0, 2);
-    lcd.print("Failed to connect");
-    delay(5000);
-  }
   wdt_enable(WDTO_8S);
   if(WiFi.SSID().length()>0)
   {
@@ -106,7 +90,6 @@ void setup() {
     lcd_wifi = false;
     wifi_enabled = false;
   }
-
   #endif
 
   ESP.wdtFeed();

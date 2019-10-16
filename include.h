@@ -15,6 +15,9 @@
 #include <DNSServer.h>
 #include <WiFiManager.h>          //https://github.com/tzapu/WiFiManager
 #include <ArduinoJson.h>          //https://github.com/bblanchon/ArduinoJson
+
+#include <AutoConnect.h>
+
 #include <LiquidCrystal_I2C.h>
 #include <RCSwitch.h>
 #include <Ticker.h>

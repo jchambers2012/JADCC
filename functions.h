@@ -23,6 +23,7 @@ void handleFileDelete();
 void handleFileCreate();
 void handleFileList();
 void web_setup();
+void wifi_setup();
 void wificonfigModeCallback(WiFiManager *myWiFiManager);
 void setup_ntp();
 void printTime(time_t offset);

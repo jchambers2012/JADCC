@@ -173,20 +173,20 @@ simpleDSTadjust dstAdjusted(StartRule, EndRule);
 #endif
 
 
-//FS VAr
-bool isFSMounted = 
+//FS
+bool isFSMounted = false;
 
 
 
-#define MOTOR_STOP false
-#define MOTOR_START true
-#define RELAY_F1 D5         
-#define RELAY_F2 D3
-#define RELAY_LED_RED D6
-#define RELAY_LED_GREEN D4
-#define GPIO_START D7
-#define GPIO_IR D0
-#define GPIO_B1 D8
-#define GPIO_B2 A0
+#define MOTOR_STOP        false
+#define MOTOR_START       true
+#define RELAY_F1          D5         
+#define RELAY_F2          D3
+#define RELAY_LED_RED     D6
+#define RELAY_LED_GREEN   D4
+#define GPIO_START        D7
+#define GPIO_IR           D0
+#define GPIO_B1           D8
+#define GPIO_B2           A0
 
 #endif /* VARIABLE_H */
