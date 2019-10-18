@@ -1,4 +1,4 @@
-#include <FS.h>                   //this needs to be first, or it all crashes and burns...
+#include <FS.h>
 #include "setting.h"
 #define _TASK_SLEEP_ON_IDLE_RUN
 #define _TASK_PRIORITY
@@ -24,5 +24,6 @@
 #include <time.h>
 #include <simpleDSTadjust.h>
 #include <WiFiUdp.h>
+#include "webpages.h"
 #include "variable.h"
 #include "functions.h"
