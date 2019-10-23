@@ -1,28 +1,32 @@
 #ifndef BLOWERCONTROLLER_VARIABLE_H
 #define BLOWERCONTROLLER_VARIABLE_H
 
-#define BLOWER_VERSION "0.11 BETA"
+
+bool debug_debug = true;
+bool lcd_debug = false;
+bool gpio_debug = false;
+bool MCP_debug = false;
+
+
+
+#define BLOWER_VERSION "0.14 BETA"
 
 Scheduler ts, cts; 
 
 RCSwitch motorRF = RCSwitch();
 
-struct dstRule StartRule = {"EDT", Second, Sun, Mar, 2, 3600};    // Daylight time = UTC/GMT -4 hours
-struct dstRule EndRule = {"EST", First, Sun, Nov, 2, 0};       // Standard time = UTC/GMT -5 hour
-
 bool shouldSaveConfig = false;    //flag for saving data
 
-bool debug_debug = true;
 int debug_debug_task_time = 5000;  //how offen to refresh the LDC screen
 unsigned long debug_debug_time, debug_debug_ran ; //Track the time each function takes to run
 unsigned long debug_debug_times[10];
 unsigned long system_loop_start,system_loop_total,system_loop_run,system_loop_max; //Track the time each function takes to run
 
-bool lcd_debug = true;
 int lcd_loop[10]=       {0,1,2 ,3,4,0,0,0,0,0};  //First 5 Screens. Screen 4 will start the control processes
 byte lcd_loop_delay[10]={0,2,10,2,0,0,0,0,0,0};  //Will delay the LCD display from moving onto the next screen
 byte lcd_loop_i = 5;
 byte lcd_loop_c = 0;
+byte lcd_loop_d = 0;
 byte lcd_loop_delay_add = 1;
 const byte lcd_loop_m = 5;
 int lcd_sensor[10]={0,0,0,0,0,0,0,0,0};
@@ -106,8 +110,7 @@ gpio_type gpio_button_blue;
 gpio_type gpio_button_black;
 gpio_type gpio_button_yellow;
 
-bool gpio_debug = false;
-int gpio_task_time = 50;
+int gpio_task_time = 100;
 unsigned long gpio_task_time_start, gpio_task_time_stop, gpio_task_time_ran, gpio_task_time_max; //Track the time each function takes to run
 
 bool motor_debug = false;
@@ -124,7 +127,7 @@ bool motor_ir = false;              //if the motor needs to send an IR code out 
 
 int MCP_task_time = 10000;
 unsigned long MCP_task_time_start, MCP_task_time_stop, MCP_task_time_ran, MCP_task_time_max; //Track the time each function takes to run
-bool MCP_debug = false;
+
 bool MCP_online_20 = false;
 #if defined(BLOWER_CONTROL_BOARDS) && BLOWER_CONTROL_BOARDS >= 2
   bool MCP_online_21 = false;
@@ -152,7 +155,8 @@ unsigned long lastSampleTime = millis();
 
 #ifdef BLOWER_CONTROL_WIFI
 
-
+struct dstRule StartRule = {"EDT", Second, Sun, Mar, 2, 3600};    // Daylight time = UTC/GMT -4 hours
+struct dstRule EndRule = {"EST", First, Sun, Nov, 2, 0};       // Standard time = UTC/GMT -5 hour
 
 ESP8266WebServer  server;
 AutoConnect portal(server);

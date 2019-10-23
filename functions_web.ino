@@ -41,41 +41,41 @@ void rootPage() {
     "</html>";
   if (master_error == true)
   {
-    content.replace("{{TOP_MSQ}}", String("<h1 style=\"color:red;margin:20px;\"><strong>MASTER ERROR TRIGGERED</strong> see bleow for more info <strong>System Disabled</strong></h1>{{TOP_MSQ2}}"));
+    content.replace("{{TOP_MSQ}}", String("<h1 align=\"center\"  style=\"color:red;margin:20px;\"><strong>MASTER ERROR TRIGGERED</strong> see bleow for more info <strong>System Disabled</strong></h1>{{TOP_MSQ2}}"));
   }else if (master_stop == true )
   {
-    content.replace("{{TOP_MSQ}}", String("<h1>Master Motor stop is engaged. Press GREEN button to start system.</h1>{{TOP_MSQ2}}"));
-  }else if (master_blower_off == false && master_blower_off == false )
+    content.replace("{{TOP_MSQ}}", String("<h1 align=\"center\" >Master Motor stop is engaged. Press GREEN button to start system.</h1>{{TOP_MSQ2}}"));
+  }else if (master_blower_off == false && master_blower_on == false )
   {
-    content.replace("{{TOP_MSQ}}", String("<h1>System is standby, waiting for sensor to trigger motor/h1>{{TOP_MSQ2}}"));
+    content.replace("{{TOP_MSQ}}", String("<h1 align=\"center\" >System is standby, waiting for sensor to trigger motor</h1>{{TOP_MSQ2}}"));
   }else if (master_blower_off == true )
   {
-    content.replace("{{TOP_MSQ}}", String("<h1>Sensor triggered a motor stop.</h1>{{TOP_MSQ2}}"));
+    content.replace("{{TOP_MSQ}}", String("<h1 align=\"center\" >Sensor triggered a motor stop.</h1>{{TOP_MSQ2}}"));
   }else if (master_blower_on == true )
   {
-    content.replace("{{TOP_MSQ}}", String("<h1>Sensor triggered a motor start.</h1>{{TOP_MSQ2}}"));
+    content.replace("{{TOP_MSQ}}", String("<h1 align=\"center\" >Sensor triggered a motor start.</h1>{{TOP_MSQ2}}"));
   }
 
   if (MCP_online_20 == false)
   {
-    content.replace("{{TOP_MSQ}}", String("<h1 style=\"color:red;margin:20px;\"><strong>SYSTEM ERROR</strong> MCP23017 is offline at address 0x21 a power cycle might fix the issue <strong>System Disabled</strong></h1>{{TOP_MSQ2}}"));
+    content.replace("{{TOP_MSQ}}", String("<h1  align=\"center\" style=\"color:red;margin:20px;\"><strong>SYSTEM ERROR</strong> MCP23017 is offline at address 0x21 a power cycle might fix the issue <strong>System Disabled</strong></h1>{{TOP_MSQ2}}"));
   }   
   #if defined(BLOWER_CONTROL_BOARDS) && BLOWER_CONTROL_BOARDS >= 2
-  if (MCP_online_20 == false)
+  if (MCP_online_21 == false && MCP_enabled_21 == true)
   {
-    content.replace("{{TOP_MSQ}}", String("<h1 style=\"color:red;margin:20px;\"><strong>SYSTEM ERROR</strong> MCP23017 is offline at address 0x22  a power cycle might fix the issue <strong>System Disabled</strong></h1>{{TOP_MSQ2}}"));
+    content.replace("{{TOP_MSQ}}", String("<h1  align=\"center\" style=\"color:red;margin:20px;\"><strong>SYSTEM ERROR</strong> MCP23017 is offline at address 0x22  a power cycle might fix the issue <strong>System Disabled</strong></h1>{{TOP_MSQ2}}"));
   } 
   #endif
   #if defined(BLOWER_CONTROL_BOARDS) && BLOWER_CONTROL_BOARDS >= 3
-  if (MCP_online_20 == false)
+  if (MCP_online_22 == false && MCP_enabled_22 == true)
   {
-    content.replace("{{TOP_MSQ}}", String("<h1 style=\"color:red;margin:20px;\"><strong>SYSTEM ERROR</strong> MCP23017 is offline at address 0x23  a power cycle might fix the issue <strong>System Disabled</strong></h1>{{TOP_MSQ2}}"));
+    content.replace("{{TOP_MSQ}}", String("<h1  align=\"center\" style=\"color:red;margin:20px;\"><strong>SYSTEM ERROR</strong> MCP23017 is offline at address 0x23  a power cycle might fix the issue <strong>System Disabled</strong></h1>{{TOP_MSQ2}}"));
   }
   #endif 
   #if defined(BLOWER_CONTROL_BOARDS) && BLOWER_CONTROL_BOARDS >= 4
-  if (MCP_online_20 == false)
+  if (MCP_online_23 == false && MCP_enabled_23 == true)
   {
-    content.replace("{{TOP_MSQ}}", String("<h1 style=\"color:red;margin:20px;\"><strong>SYSTEM ERROR</strong> MCP23017 is offline at address 0x24  a power cycle might fix the issue <strong>System Disabled</strong></h1>{{TOP_MSQ2}}"));
+    content.replace("{{TOP_MSQ}}", String("<h1  align=\"center\" style=\"color:red;margin:20px;\"><strong>SYSTEM ERROR</strong> MCP23017 is offline at address 0x24  a power cycle might fix the issue <strong>System Disabled</strong></h1>{{TOP_MSQ2}}"));
   } 
   #endif
   content.replace("{{TOP_MSQ2}}", String("")); //kill off the {{TOP_MSQ}}

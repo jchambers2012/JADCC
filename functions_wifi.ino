@@ -1,5 +1,4 @@
 #ifdef BLOWER_CONTROL_WIFI
-#define BLOWER_CONTROL_WIFI
 #include "webpages.h"
 
 static const char AUX_TIMEZONE[] PROGMEM = R"(
@@ -330,7 +329,9 @@ void wifi_setup(){
 
   Serial.println ( F("Setting up portal") );
   portal.join({ elementsAux, saveAux });
-  config.portalTimeout = 60000;  // It will time out in 60 seconds
+  config.portalTimeout = 30000;  // It will time out in 10 secondsretainPortal
+  //config.retainPortal = true;
+  config.apid = "BlowerConfig";
   config.ticker = true;
   portal.config(config);
   lcd.setCursor(0, 1);
@@ -343,32 +344,41 @@ void wifi_setup(){
     lcd.setCursor(0, 2);
     lcd.print("Failed to connect");
     delay(5000);
+    wifi_enabled = false;
+  }else{
+    wifi_enabled = true;
+    Serial.print ( F("Attempting to start mDNS for ") );
+    Serial.print ( BLOWER_CONTROL_MDNS);
+    Serial.println ( F(".local") );
+    //if (!MDNS.begin(BLOWER_CONTROL_MDNS)) {
+    //  Serial.println("Error setting up MDNS responder!");
+    //}
   }
 }
 
 
-void wificonfigModeCallback(WiFiManager *myWiFiManager){
-  Serial.println("Entered config mode");
-  Serial.println(WiFi.softAPIP());
+//void wificonfigModeCallback(WiFiManager *myWiFiManager){
+//  Serial.println("Entered config mode");
+//  Serial.println(WiFi.softAPIP());
   // print the ssid that we should connect to to configure the ESP8266
-  Serial.print("Created config portal AP ");
-  Serial.println(myWiFiManager->getConfigPortalSSID());
-  lcd.clear();
-  lcd.print("Failed to connect");
-  lcd.setCursor(0, 1);
-  lcd.print("to SSID ");
-  delay(3000);
-  lcd.clear();
-  lcd.print("Entered config mode");
-  lcd.setCursor(0, 1);
-  lcd.print("Please connect to ");
-  lcd.setCursor(0, 2);    
-  lcd.print("SSID:");
-  lcd.setCursor(6, 2);    
-  lcd.print(myWiFiManager->getConfigPortalSSID());
-  lcd.setCursor(0, 3);    
-  lcd.print("Timeout 30 Sec");
-}
+//  Serial.print("Created config portal AP ");
+//  Serial.println(myWiFiManager->getConfigPortalSSID());
+//  lcd.clear();
+//  lcd.print("Failed to connect");
+//  lcd.setCursor(0, 1);
+//  lcd.print("to SSID ");
+//  delay(3000);
+//  lcd.clear();
+//  lcd.print("Entered config mode");
+//  lcd.setCursor(0, 1);
+//  lcd.print("Please connect to ");
+//  lcd.setCursor(0, 2);    
+//  lcd.print("SSID:");
+//  lcd.setCursor(6, 2);    
+//  lcd.print(myWiFiManager->getConfigPortalSSID());
+//  lcd.setCursor(0, 3);    
+//  lcd.print("Timeout 30 Sec");
+//}
 void wifi_save_config () {
   Serial.println("Should save config");
   shouldSaveConfig = true;

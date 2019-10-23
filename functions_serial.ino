@@ -11,6 +11,9 @@ void run_chip_dump(){
   Serial.print("ESP.getFlashChipSizeByChipId(); ");Serial.println(ESP.getFlashChipSizeByChipId());
   Serial.print("ESP.getFlashChipId(); ");Serial.println(ESP.getFlashChipId());
   Serial.print("ESP.getFreeHeap(); ");Serial.println(ESP.getFreeHeap());
+  //Serial.println(F(ARDUINO));
+  //Serial.println(F(__DATE__));
+  //Serial.println(F(__TIME__));
 }
 
 
@@ -23,7 +26,6 @@ void run_debug(){
   debug_debug_ran++;
   //Current state of the logic flags, set by the GPIO control
   if(debug_debug){
-    run_chip_dump();
     Serial.println ( F("===========================================" ));
     Serial.println ( "Timing:" );
     Serial.println ( F("===========================================" ));
@@ -176,6 +178,8 @@ void run_debug(){
     Serial.println ( lcd_loop_c );
     Serial.print ( F(" - lcd_loop_i = ") );
     Serial.println ( lcd_loop_i );
+    Serial.print ( F(" - lcd_loop_d = ") );
+    Serial.println ( lcd_loop_d );
     Serial.print ( F(" - lcd_loop[lcd_loop_c] = ") );
     Serial.println ( lcd_loop[lcd_loop_c] );
     Serial.print ( F(" - lcd_loop[] = ") );
@@ -279,7 +283,7 @@ void run_debug(){
   printTime(tick);
   Serial.println ( F("===========================================") );
   #endif
-  run_chip_dump();
+  Serial.print("ESP.getFreeHeap(); ");Serial.println(ESP.getFreeHeap());
   debug_debug_time = millis()-now;
 }
 }

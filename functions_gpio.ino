@@ -24,14 +24,17 @@ void do_sensor_control(){
 	  if( i <=15)
 	  {
         sensors[i].current = mcp_20.digitalRead(i);
+        delay(5);
 	  }else if(i >=16  && i <=31)
 	  {
         sensors[i].current = mcp_21.digitalRead(i-16);
+        delay(5);
 	  }else if(i >=32  && i <=47)
 	  {
 		//is the system is setup for 3 control boards
 		#if defined(BLOWER_CONTROL_BOARDS) && BLOWER_CONTROL_BOARDS >= 3
         sensors[i].current = mcp_22.digitalRead(i-32);
+        delay(5);
 	    #else
 		  sensors[i].current = false;
         #endif
@@ -40,6 +43,7 @@ void do_sensor_control(){
 		//is the system is setup for 4 control boards
 		#if defined(BLOWER_CONTROL_BOARDS) && BLOWER_CONTROL_BOARDS >= 4
         sensors[i].current = mcp_22.digitalRead(i-48);
+        delay(5);
 	    #else
 		  sensors[i].current = false;
         #endif
@@ -49,6 +53,7 @@ void do_sensor_control(){
 	  #else
 	  //Controller is setup for single control board
     sensors[i].current = mcp_20.digitalRead(i);
+    delay(5);
     #endif
       //verify that the sensor has not flipped
       if(sensors[i].current != sensors[i].last)

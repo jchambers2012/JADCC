@@ -1,3 +1,4 @@
+#include <GDBStub.h>
 #include "include.h"
 ;;;;;;;;;;;;;;;;;;;;
 Adafruit_MCP23017 mcp_20; //Zones 1-3 Sensors INDEX 0-15
@@ -27,6 +28,7 @@ Task t_run_lcd_draw(lcd_d_task_time, TASK_FOREVER, &run_lcd_draw);
 Task t_run_debug(debug_debug_task_time, TASK_FOREVER, &run_debug);
 
 void setup() {
+  //gdbstub_init();
   ESP.wdtEnable(WDTO_8S);
   pinMode(RELAY_F1, OUTPUT);
   digitalWrite(RELAY_F1, false);  
@@ -62,7 +64,7 @@ void setup() {
   if(WiFi.SSID().length()>0)
   {
     //if you get here you have connected to the WiFi
-    Serial.println("connected...yeey :)");
+    DC_DBG("connected...yeey \n");
     lcd.setCursor(0, 2);
     lcd.print("WiFi connected");
     lcd.setCursor(0, 3);
@@ -89,59 +91,38 @@ void setup() {
   #endif
 
   ESP.wdtFeed();
-  #ifdef BLOWERCONTROLLER_DEBUG
-  Serial.print ( "Zones Enabled: " );
-  Serial.println ( sensors_zone_num );
-  #endif
-
-  #ifdef BLOWERCONTROLLER_DEBUG
-  Serial.println ( "Setting up MCP23017" );
-  #endif
+  DC_DBG ( "Zones Enabled: %d\n",sensors_zone_num );
+  DC_DBG( "Setting up MCP23017 at address 0x20\n" );
   mcp_20.begin(0);      // use default address 0 (0x20)
   for (int i = 0; i <= 15; i++) {
     mcp_20.pinMode(i, INPUT);
   }
-  
-  #ifdef BLOWERCONTROLLER_DEBUG
-  Serial.println ( "DONE Setting up MCP23017" );
-  #endif
-
-  #ifdef BLOWERCONTROLLER_DEBUG
-  Serial.println("++++++++++++++++++++++++++++++++++++++++");
+  DC_DBG( "DONE: Setting up MCP23017 at address 0x20\n" );
+  DC_DBG( "++++++++++++++++++++++++++++++++++++++++\n");
   Serial.println("Scheduler INIT");
-  #endif
 
   ESP.wdtFeed();
-  #ifdef BLOWERCONTROLLER_DEBUG
-  Serial.println("Initialized Critical scheduler");
-  #endif
+  DC_DBG( "Initialized Critical scheduler\n");
   ts.init();
 
   //Run the hardware MCP checker
   ts.addTask(t_check_MCP);
   t_check_MCP.enable();
-  #ifdef BLOWERCONTROLLER_DEBUG
-  Serial.println("Started t_check_MCP task");
-  #endif
+  DC_DBG( "Started t_check_MCP task\n");
 
   //Run the GPIO control logic
   ts.addTask(t_gpioControl);
   t_gpioControl.enable();
-  #ifdef BLOWERCONTROLLER_DEBUG
-  Serial.println("Started t_gpioControl task");
-  #endif
+  DC_DBG( "Started t_gpioControl task\n");
 
   //Run the blower control logic
   ts.addTask(t_run_blower_control);
   t_run_blower_control.enable();
-  #ifdef BLOWERCONTROLLER_DEBUG
-  Serial.println("Started t_run_blower_control task");
-  #endif
+  DC_DBG( "Started t_run_blower_control task\n");
 
   ESP.wdtFeed();
-  #ifdef BLOWERCONTROLLER_DEBUG
-  Serial.println("Initialized normal scheduler");
-  #endif
+  
+  DC_DBG( "Initialized normal scheduler\n");
   //ts.init();
   //ts.setHighPriorityScheduler(&cts);
 
@@ -149,26 +130,17 @@ void setup() {
   //Run the Debugger
   ts.addTask(t_run_debug);
   t_run_debug.enable();
-  #ifdef BLOWERCONTROLLER_DEBUG
-  Serial.println("Started t_run_lcd_draw task");
-  #endif
+  DC_DBG( "Started t_run_lcd_draw task\n");
 
   //Run the hardware LCD functions checker
   ts.addTask(t_run_lcd_draw);
   t_run_lcd_draw.enable();
-  #ifdef BLOWERCONTROLLER_DEBUG
-  Serial.println("Started t_run_lcd_draw task");
-  #endif
+ DC_DBG( "Started t_run_lcd_draw task\n");
 
   //Run the hardware LCD functions checker
   ts.addTask(t_run_lcd_control);
-  #ifdef BLOWERCONTROLLER_DEBUG
-  Serial.println("Started t_run_lcd_control task");
-  #endif
+  DC_DBG( "Started t_run_lcd_control task\n");
 
-  #ifdef BLOWERCONTROLLER_DEBUG
-  Serial.println("++++++++++++++++++++++++++++++++++++++++");
-  #endif
   ESP.wdtFeed();
   
   load_defaults_boot();
@@ -180,10 +152,13 @@ void setup() {
   //read configuration from FS json
   Serial.println("Mounting FS...");
   isFSMounted = SPIFFS.begin();
-    if (!isFSMounted) {
+  if (!isFSMounted) {
     Serial.println("Formatting file system...");
     wdt_disable();
-    SPIFFS.format();
+    #ifdef BLOWERCONTROLLER_AUTO_FORMAT
+      SPIFFS.format();
+    #endif
+    //Bypassed to prevent the system fr
     wdt_enable(WDTO_8S);
   }
   ESP.wdtFeed();
@@ -191,10 +166,10 @@ void setup() {
     Serial.println("Mounted file system");
     if (SPIFFS.exists("/config.json")) {
       //file exists, reading and loading
-      Serial.println("reading config file");
+      DC_DBG( "reading config file\n");
       File configFile = SPIFFS.open("/config.json", "r");
       if (configFile) {
-        Serial.println("opened config file");
+        DC_DBG("opened config file\n");
         size_t size = configFile.size();
         // Allocate a buffer to store contents of the file.
         std::unique_ptr<char[]> buf(new char[size]);
@@ -205,7 +180,7 @@ void setup() {
         json.printTo(Serial);
         if (json.success()) {
           ESP.wdtFeed();
-          Serial.println("\nparsed json");
+          DC_DBG( "\nparsed json\n");
 
           //strcpy(mqtt_server, json["mqtt_server"]);
           //strcpy(mqtt_port, json["mqtt_port"]);
@@ -305,17 +280,20 @@ void loop() {
 
   #ifdef BLOWER_CONTROL_WIFI
   server.handleClient();
-  MDNS.update();
-  if(readyForNtpUpdate  && motor_logic_state==MOTOR_STOP)
-   {
-    //Only Update the NTP when the motor is offline and GPIO pulling can be delayed.
-    readyForNtpUpdate = false;
-    printTime(0);
-    updateNTP();
-    Serial.print("\nUpdated time from NTP Server: ");
-    printTime(0);
-    Serial.print("Next NTP Update: ");
-    printTime(tick);
+  if(wifi_enabled == true)
+  {
+    //MDNS.update();
+    if(readyForNtpUpdate  && motor_logic_state==MOTOR_STOP)
+     {
+      //Only Update the NTP when the motor is offline and GPIO pulling can be delayed.
+      readyForNtpUpdate = false;
+      printTime(0);
+      updateNTP();
+      Serial.print("\nUpdated time from NTP Server: ");
+      printTime(0);
+      Serial.print("Next NTP Update: ");
+      printTime(tick);
+    }
   }
   #endif
 

@@ -5,6 +5,7 @@ void check_MCP(){
    MCP_task_time_ran++;
    bool online = true;
     Wire.beginTransmission(0x20);
+    delay(1);
     switch (Wire.endTransmission()) {
       case 0:
         //success
@@ -35,6 +36,7 @@ void check_MCP(){
         online = false;
         if(MCP_debug){Serial.println ( "Unknown Error" );}
     }
+    online = true;
     for (int i = 0; i <= 15; i++) {
       sensors[i].chip_online = online;
     }
@@ -61,6 +63,7 @@ void check_MCP(){
 
   //Dual controller board is enabled
     Wire.beginTransmission(0x21);
+    delay(1);
     switch (Wire.endTransmission()) {
       case 0:
         //success
@@ -121,6 +124,7 @@ void check_MCP(){
 
   //Dual controller board is enabled
     Wire.beginTransmission(0x22);
+    delay(1);
     switch (Wire.endTransmission()) {
       case 0:
         //success
@@ -181,6 +185,7 @@ void check_MCP(){
 
   //Dual controller board is enabled
     Wire.beginTransmission(0x23);
+    delay(1);
     switch (Wire.endTransmission()) {
       case 0:
         //success
