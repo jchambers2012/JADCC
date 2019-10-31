@@ -36,7 +36,6 @@ void check_MCP(){
         online = false;
         if(MCP_debug){Serial.println ( "Unknown Error" );}
     }
-    online = true;
     for (int i = 0; i <= 15; i++) {
       sensors[i].chip_online = online;
     }

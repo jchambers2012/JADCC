@@ -1,6 +1,54 @@
+//This function will pull all the MCP's pin status and just return the one pin.  
+//Will store the value for additinal calls
+uint8_t do_sensor_pull(uint8_t pin, int address)
+{
+  uint8_t pin_bit=pin%8;
+  uint8_t regAddr=(pin<8) ?MCP23017_GPIOA:MCP23017_GPIOB;
+  bool need_refresh = ((gpio_last_read+50) < millis());
+  
+  if(address == 20  && (gpio_last_address != address || need_refresh))
+  {
+   gpio_last_address = address;
+   gpio_last_read = millis();
+    if(MCP_online_20 == true)
+    {
+       gpio_last_reading_A = mcp_20.readGPIO(0);
+       gpio_last_reading_B = mcp_20.readGPIO(1);
+    }else{
+       //Chip Offline, Trigger a low on all sensor inputs       gpio_last_reading_A = 0;
+       gpio_last_reading_B = 0b00000001;
+    }
+
+  }
+  #if defined(BLOWER_CONTROL_BOARDS) && BLOWER_CONTROL_BOARDS >= 2
+  if(address == 21 && MCP_enabled_21==true && (gpio_last_address != address || need_refresh))
+  {
+   gpio_last_address = address;
+   gpio_last_read = millis();
+    if(MCP_online_21 == true)
+    {
+       gpio_last_reading_A = mcp_21.readGPIO(0);
+       gpio_last_reading_B = mcp_21.readGPIO(1);
+    }else{
+       //Chip Offline, Trigger a low on all sensor inputs       
+       gpio_last_reading_A = 0;
+       gpio_last_reading_B = 0b00000001;
+    }
+
+  }
+  #endif  
+  if(pin>8)
+  {
+    return (gpio_last_reading_B >> pin_bit) & 0x1;
+  }else{
+    return (gpio_last_reading_A >> pin_bit) & 0x1;
+  }
+}
+
 //This function will check each sensor of the MCP and decide is the system should turn
 // the blower on/off, function relays should be on/or and preform some debouncing 
 void do_sensor_control(){
+  uint16_t ba=0; //all 16 pins (port A and B) into a single 16 bits variable.
   gpio_task_time_start = millis();
   gpio_task_time_ran++;
   master_blower_off = false;
@@ -23,18 +71,21 @@ void do_sensor_control(){
       //Sensor is enabled let see what it is doing
 	  if( i <=15)
 	  {
-        sensors[i].current = mcp_20.digitalRead(i);
-        delay(5);
+        //sensors[i].current = mcp_20.digitalRead(i);
+        sensors[i].current = do_sensor_pull(i,20);
+        //delay(5);
 	  }else if(i >=16  && i <=31)
 	  {
-        sensors[i].current = mcp_21.digitalRead(i-16);
-        delay(5);
+        //sensors[i].current = mcp_21.digitalRead(i-16);
+        sensors[i].current = do_sensor_pull(i-16,21);
+        //delay(5);
 	  }else if(i >=32  && i <=47)
 	  {
 		//is the system is setup for 3 control boards
 		#if defined(BLOWER_CONTROL_BOARDS) && BLOWER_CONTROL_BOARDS >= 3
-        sensors[i].current = mcp_22.digitalRead(i-32);
-        delay(5);
+        //sensors[i].current = mcp_22.digitalRead(i-32);
+        sensors[i].current = do_sensor_pull(i-32,22);
+        //delay(5);
 	    #else
 		  sensors[i].current = false;
         #endif
@@ -42,8 +93,9 @@ void do_sensor_control(){
 	  {
 		//is the system is setup for 4 control boards
 		#if defined(BLOWER_CONTROL_BOARDS) && BLOWER_CONTROL_BOARDS >= 4
-        sensors[i].current = mcp_22.digitalRead(i-48);
-        delay(5);
+        //sensors[i].current = mcp_22.digitalRead(i-48);
+        sensors[i].current = do_sensor_pull(i-48,23);
+        //delay(5);
 	    #else
 		  sensors[i].current = false;
         #endif
@@ -52,8 +104,9 @@ void do_sensor_control(){
       }
 	  #else
 	  //Controller is setup for single control board
-    sensors[i].current = mcp_20.digitalRead(i);
-    delay(5);
+    //sensors[i].current = mcp_20.digitalRead(i);
+    sensors[i].current = do_sensor_pull(i,20);
+    //delay(5);
     #endif
       //verify that the sensor has not flipped
       if(sensors[i].current != sensors[i].last)

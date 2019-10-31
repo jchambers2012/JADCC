@@ -28,13 +28,6 @@ short timezone = -5; // US Eastern Time Zone
 
 //US Eastern Time Zone (New York, Boston)
 
-
-// Define the default setting for each setting
-
-
-
-
-
 // Debug output destination can be defined externally with DC_DEBUG_PORT
 // Lovingly stolen for PaguBuilder: @file PageBuilder.h @author hieromon@gmail.com @copyright  MIT license.
 #ifndef DC_DEBUG_PORT
@@ -42,7 +35,10 @@ short timezone = -5; // US Eastern Time Zone
 #endif // !DC_DEBUG_PORT
 #ifdef BLOWERCONTROLLER_DEBUG
 #define DC_DBG_DUMB(...) do {PB_DEBUG_PORT.printf( __VA_ARGS__ );} while (0)
-#define DC_DBG(...) do {PB_DEBUG_PORT.print("[DC] "); PB_DEBUG_PORT.printf( __VA_ARGS__ );} while (0)
+//#define DC_DBG(...) do {PB_DEBUG_PORT.print("[DC] "); PB_DEBUG_PORT.printf( __VA_ARGS__ );} while (0)
+#define PROGMEM_T __attribute__((section(".irom.text.template")))
+#define DC_DBG(fmt, ...) { static const char pfmt[] PROGMEM_T = fmt; Serial.printf_P(pfmt, ## __VA_ARGS__); }
+
 #else
 #define DC_DBG_DUMB(...)
 #define DC_DBG(...)

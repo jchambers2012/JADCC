@@ -5,11 +5,11 @@
 bool debug_debug = true;
 bool lcd_debug = false;
 bool gpio_debug = false;
-bool MCP_debug = false;
+bool MCP_debug = true;
 
 
 
-#define BLOWER_VERSION "0.14 BETA"
+#define BLOWER_VERSION "0.16 BETA"
 
 Scheduler ts, cts; 
 
@@ -92,6 +92,10 @@ typedef struct {
   byte sensors_zone_num = 3;
 #endif
 byte gpio_max_read = 15;    // MAX number of indexes the sensor GPIO function should read.  Must be 15, 31, etc.
+unsigned long gpio_last_read = 0;    // MAX number of indexes the sensor GPIO function should read.  Must be 15, 31, etc.
+uint8_t gpio_last_reading_A = 0;    // MAX number of indexes the sensor GPIO function should read.  Must be 15, 31, etc.
+uint8_t gpio_last_reading_B = 0;    // MAX number of indexes the sensor GPIO function should read.  Must be 15, 31, etc.
+int gpio_last_address = 0;    // MAX number of indexes the sensor GPIO function should read.  Must be 15, 31, etc.
 typedef struct {
   bool current = false;             //The currently read sensor from the MCP
   bool last = false;                //The last read sensor from the MCP
@@ -110,7 +114,8 @@ gpio_type gpio_button_blue;
 gpio_type gpio_button_black;
 gpio_type gpio_button_yellow;
 
-int gpio_task_time = 100;
+int gpio_task_time = 1000;
+
 unsigned long gpio_task_time_start, gpio_task_time_stop, gpio_task_time_ran, gpio_task_time_max; //Track the time each function takes to run
 
 bool motor_debug = false;
