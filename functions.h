@@ -18,6 +18,8 @@ void load_force_stop();
 #ifdef BLOWER_CONTROL_WIFI
 //WEB SERVER FUNCTIONS
 void rootPage();
+void zonePage();
+void zonePageSubmit();
 void saveTZ();
 String formatBytes(size_t bytes);
 String getContentType(String filename);

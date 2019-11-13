@@ -35,233 +35,6 @@ static const char AUX_TIMEZONE[] PROGMEM = R"(
 }
 )";
 
-
-static const char PAGE_ELEMENTS[] PROGMEM = R"(
-[
-  {
-    "uri": "/zone1",
-    "title": "Zone 1",
-    "menu": true,
-    "element": [
-      {
-        "name": "text",
-        "type": "ACText",
-        "value": "AutoConnect element behaviors collection",
-        "style": "font-family:Arial;font-size:18px;font-weight:400;color:#191970"
-      },
-      {
-        "name": "z1-1-e",
-        "type": "ACCheckbox",
-        "value": "z1-1-e",
-        "label": "Z1-1 Enabled",
-        "labelposition": "infront",
-        "checked": true
-      },
-      {
-        "name": "z1-1-i",
-        "type": "ACCheckbox",
-        "value": "z1-1-e",
-        "label": "Z1-1 Invert",
-        "labelposition": "infront",
-        "checked": true
-      },
-      {
-        "name": "z1-1-stop",
-        "type": "ACCheckbox",
-        "value": "z1-1-e",
-        "label": "Z1-1 Stop Motor",
-        "labelposition": "infront",
-        "checked": false
-      },
-      {
-        "name": "z1-1-stop",
-        "type": "ACCheckbox",
-        "value": "z1-1-e",
-        "label": "Z1-1 Start Motor",
-        "labelposition": "infront",
-        "checked": true
-      },
-      {
-        "name": "z1-1-f1",
-        "type": "ACCheckbox",
-        "value": "z1-1-f1",
-        "label": "Z1-1 Function 1",
-        "labelposition": "infront",
-        "checked": true
-      },
-      {
-        "name": "z1-1-f2",
-        "type": "ACCheckbox",
-        "value": "z1-1-f1",
-        "label": "Z1-1 Function 2",
-        "labelposition": "infront",
-        "checked": true
-      },
-      {
-        "name": "z1-1-name",
-        "type": "ACInput",
-        "label": "Sensor Name",
-        "placeholder": "This area accepts hostname patterns",
-        "pattern": "^(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\\-]*[a-zA-Z0-9])\\.)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\\-]*[A-Za-z0-9])$"
-      },
-      {
-        "name": "load",
-        "type": "ACSubmit",
-        "value": "Load",
-        "uri": "/elements"
-      },
-      {
-        "name": "save",
-        "type": "ACSubmit",
-        "value": "Save",
-        "uri": "/save"
-      },
-      {
-        "name": "adjust_width",
-        "type": "ACElement",
-        "value": "<script type=\"text/javascript\">window.onload=function(){var t=document.querySelectorAll(\"input[type='text']\");for(i=0;i<t.length;i++){var e=t[i].getAttribute(\"placeholder\");e&&t[i].setAttribute(\"size\",e.length*.8)}};</script>"
-      }
-    ]
-  },
-  {
-    "uri": "/zone2",
-    "title": "Zone 2",
-    "menu": true,
-    "element": [
-      {
-        "name": "text",
-        "type": "ACText",
-        "value": "AutoConnect element behaviors collection",
-        "style": "font-family:Arial;font-size:18px;font-weight:400;color:#191970"
-      },
-      {
-        "name": "check",
-        "type": "ACCheckbox",
-        "value": "check",
-        "label": "Check",
-        "labelposition": "infront",
-        "checked": true
-      },
-      {
-        "name": "input",
-        "type": "ACInput",
-        "label": "Text input",
-        "placeholder": "This area accepts hostname patterns",
-        "pattern": "^(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\\-]*[a-zA-Z0-9])\\.)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\\-]*[A-Za-z0-9])$"
-      },
-      {
-        "name": "radio",
-        "type": "ACRadio",
-        "value": [
-          "Button-1",
-          "Button-2",
-          "Butotn-3"
-        ],
-        "label": "Radio buttons",
-        "arrange": "vertical",
-        "checked": 1
-      },
-      {
-        "name": "select",
-        "type": "ACSelect",
-        "option": [
-          "Option-1",
-          "Option-2",
-          "Option-3"
-        ],
-        "label": "Select",
-        "selected": 2
-      },
-      {
-        "name": "load",
-        "type": "ACSubmit",
-        "value": "Load",
-        "uri": "/elements"
-      },
-      {
-        "name": "save",
-        "type": "ACSubmit",
-        "value": "Save",
-        "uri": "/save"
-      },
-      {
-        "name": "adjust_width",
-        "type": "ACElement",
-        "value": "<script type=\"text/javascript\">window.onload=function(){var t=document.querySelectorAll(\"input[type='text']\");for(i=0;i<t.length;i++){var e=t[i].getAttribute(\"placeholder\");e&&t[i].setAttribute(\"size\",e.length*.8)}};</script>"
-      }
-    ]
-  },
-  {
-    "uri": "/zone3",
-    "title": "Zone 3",
-    "menu": true,
-    "element": [
-      {
-        "name": "text",
-        "type": "ACText",
-        "value": "AutoConnect element behaviors collection",
-        "style": "font-family:Arial;font-size:18px;font-weight:400;color:#191970"
-      },
-      {
-        "name": "check",
-        "type": "ACCheckbox",
-        "value": "check",
-        "label": "Check",
-        "labelposition": "infront",
-        "checked": true
-      },
-      {
-        "name": "input",
-        "type": "ACInput",
-        "label": "Text input",
-        "placeholder": "This area accepts hostname patterns",
-        "pattern": "^(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\\-]*[a-zA-Z0-9])\\.)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\\-]*[A-Za-z0-9])$"
-      },
-      {
-        "name": "radio",
-        "type": "ACRadio",
-        "value": [
-          "Button-1",
-          "Button-2",
-          "Butotn-3"
-        ],
-        "label": "Radio buttons",
-        "arrange": "vertical",
-        "checked": 1
-      },
-      {
-        "name": "select",
-        "type": "ACSelect",
-        "option": [
-          "Option-1",
-          "Option-2",
-          "Option-3"
-        ],
-        "label": "Select",
-        "selected": 2
-      },
-      {
-        "name": "load",
-        "type": "ACSubmit",
-        "value": "Load",
-        "uri": "/elements"
-      },
-      {
-        "name": "save",
-        "type": "ACSubmit",
-        "value": "Save",
-        "uri": "/save"
-      },
-      {
-        "name": "adjust_width",
-        "type": "ACElement",
-        "value": "<script type=\"text/javascript\">window.onload=function(){var t=document.querySelectorAll(\"input[type='text']\");for(i=0;i<t.length;i++){var e=t[i].getAttribute(\"placeholder\");e&&t[i].setAttribute(\"size\",e.length*.8)}};</script>"
-      }
-    ]
-  }
-  ]
-  )";
-  
   static const char PAGE_SAVE[] PROGMEM = R"(
   {
     "uri": "/save",
@@ -309,16 +82,25 @@ void wifi_setup(){
   portal.join({ Timezone });        // Register aux. page
   server.on("/saveTZ", saveTZ);   // Set NTP server trigger handler
   
+  Serial.println ( F("Setting up z1") );
+  server.on("/zone1", zonePage);
+  Serial.println ( F("Setting up z2") );
+  server.on("/zone2", zonePage);
+  Serial.println ( F("Setting up z3") );
+  server.on("/zone3", zonePage);
+  Serial.println ( F("Setting up zonePageSubmit") );
+  server.on("/zonePageSubmit", zonePageSubmit);
+  
   Serial.println ( F("Setting up root") );
   // Behavior a root path of ESP8266WebServer.
   server.on("/", rootPage);
   
   Serial.println ( F("Setting up zone settings pages") );
-  elementsAux.load(FPSTR(PAGE_ELEMENTS));
-  elementsAux.on([] (AutoConnectAux& aux, PageArgument& arg) {
-    //Load the needed Elemets
-    return String();
-  });
+//  elementsAux.load(FPSTR(PAGE_ELEMENTS));
+//  elementsAux.on([] (AutoConnectAux& aux, PageArgument& arg) {
+//    //Load the needed Elemets
+//    return String();
+//  });
 
   Serial.println ( F("Setting up zone settings pages save funnctions") );
   saveAux.load(FPSTR(PAGE_SAVE));
@@ -384,8 +166,8 @@ void wifi_save_config () {
   shouldSaveConfig = true;
   if (shouldSaveConfig) {
     Serial.println("saving config");
-    DynamicJsonBuffer jsonBuffer;
-    JsonObject& json = jsonBuffer.createObject();
+    //DynamicJsonBuffer jsonBuffer;
+    //JsonObject& json = jsonBuffer.createObject();
     //json["mqtt_server"] = mqtt_server;
     //json["mqtt_port"] = mqtt_port;
     //json["blynk_token"] = blynk_token;
@@ -395,8 +177,8 @@ void wifi_save_config () {
       Serial.println("failed to open config file for writing");
     }
 
-    json.printTo(Serial);
-    json.printTo(configFile);
+    //json.printTo(Serial);
+    //json.printTo(configFile);
     configFile.close();
     //end save
   }

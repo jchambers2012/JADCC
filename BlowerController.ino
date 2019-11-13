@@ -1,4 +1,3 @@
-#include <GDBStub.h>
 #include "include.h"
 ;;;;;;;;;;;;;;;;;;;;
 Adafruit_MCP23017 mcp_20; //Zones 1-3 Sensors INDEX 0-15
@@ -173,7 +172,7 @@ void setup() {
         size_t size = configFile.size();
         // Allocate a buffer to store contents of the file.
         std::unique_ptr<char[]> buf(new char[size]);
-
+        #if 0
         configFile.readBytes(buf.get(), size);
         DynamicJsonBuffer jsonBuffer;
         JsonObject& json = jsonBuffer.parseObject(buf.get());
@@ -190,6 +189,7 @@ void setup() {
           Serial.println("failed to load json config, defaults will be used");
         }
         configFile.close();
+        #endif
       }
     } else {
       Serial.println("config.json missing, defaults will be used");
@@ -263,8 +263,10 @@ void setup() {
   //TEST Objects until I can get around to getting config.json working
 
   sensors[4].enable = false;
-  //sensors[13].turn_on = false;
-  //sensors[13].turn_off = true;
+  sensors[3].invert = false;
+  sensors[11].f1 = false;
+  sensors[12].f2 = false;
+  sensors[13].turn_off = true;sensors[13].turn_on = false;
   sensors[13].f1 = true;
   //master_stop = false;
 

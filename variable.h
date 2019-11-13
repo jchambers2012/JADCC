@@ -5,11 +5,11 @@
 bool debug_debug = true;
 bool lcd_debug = false;
 bool gpio_debug = false;
-bool MCP_debug = true;
+bool MCP_debug = false;
 
 
 
-#define BLOWER_VERSION "0.16 BETA"
+#define BLOWER_VERSION "0.18 BETA"
 
 Scheduler ts, cts; 
 
@@ -17,7 +17,7 @@ RCSwitch motorRF = RCSwitch();
 
 bool shouldSaveConfig = false;    //flag for saving data
 
-int debug_debug_task_time = 5000;  //how offen to refresh the LDC screen
+int debug_debug_task_time = 6000;  //how offen to refresh the Serial screen
 unsigned long debug_debug_time, debug_debug_ran ; //Track the time each function takes to run
 unsigned long debug_debug_times[10];
 unsigned long system_loop_start,system_loop_total,system_loop_run,system_loop_max; //Track the time each function takes to run

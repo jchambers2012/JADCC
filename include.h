@@ -11,9 +11,12 @@
 #include <LiquidCrystal_I2C.h>
 #include <RCSwitch.h>
 #include <Ticker.h>
+#define ARDUINOJSON_ENABLE_PROGMEM 1
 #include <ArduinoJson.h>          //https://github.com/bblanchon/ArduinoJson
 #ifdef BLOWER_CONTROL_WIFI
   //#include <ESP8266mDNS.h>
+  #define AC_DEBUG
+  #define PB_DEBUG
   #include <AutoConnect.h>
   #include <simpleDSTadjust.h>
   #include "webpages.h"
