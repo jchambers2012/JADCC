@@ -91,6 +91,17 @@ void wifi_setup(){
   Serial.println ( F("Setting up zonePageSubmit") );
   server.on("/zonePageSubmit", zonePageSubmit);
   
+  Serial.println ( F("Setting up zonePageSubmit") );
+  server.on("/config.json", downloadConfig);
+  Serial.println ( F("Setting up settings") );
+  server.on("/settings", settingsPage);
+  Serial.println ( F("Setting up settings") );
+  server.on("/motor", settingsMotor);
+  Serial.println ( F("Setting up saveConfig") );
+  server.on("/saveConfig", saveConfig);
+  Serial.println ( F("Setting up restore") );
+  server.on("/restore", restoreConfig);
+  
   Serial.println ( F("Setting up root") );
   // Behavior a root path of ESP8266WebServer.
   server.on("/", rootPage);

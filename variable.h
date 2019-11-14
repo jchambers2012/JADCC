@@ -17,7 +17,7 @@ RCSwitch motorRF = RCSwitch();
 
 bool shouldSaveConfig = false;    //flag for saving data
 
-int debug_debug_task_time = 6000;  //how offen to refresh the Serial screen
+int debug_debug_task_time = 10000;  //how offen to refresh the Serial screen
 unsigned long debug_debug_time, debug_debug_ran ; //Track the time each function takes to run
 unsigned long debug_debug_times[10];
 unsigned long system_loop_start,system_loop_total,system_loop_run,system_loop_max; //Track the time each function takes to run
@@ -79,18 +79,19 @@ typedef struct {
   bool processed_l = false;         //set high once time_off is set
 } sensor_type;
 #if defined(BLOWER_CONTROL_BOARDS) && BLOWER_CONTROL_BOARDS == 2
-  sensor_type sensors[32]; // Two control board in use
+  #define BLOWER_CONTROL_MAX_SENSOR 32
   byte sensors_zone_num = 6;
 #elif defined(BLOWER_CONTROL_BOARDS) && BLOWER_CONTROL_BOARDS == 3
-  sensor_type sensors[48]; // Two control board in use
+  #define BLOWER_CONTROL_MAX_SENSOR 48
   byte sensors_zone_num = 9;
 #elif defined(BLOWER_CONTROL_BOARDS) && BLOWER_CONTROL_BOARDS >= 4
-  sensor_type sensors[64]; // Two control board in use
+  #define BLOWER_CONTROL_MAX_SENSOR 64
   byte sensors_zone_num = 12;
 #else
-  sensor_type sensors[16]; // Only one control board in use
+  #define BLOWER_CONTROL_MAX_SENSOR 16
   byte sensors_zone_num = 3;
 #endif
+sensor_type sensors[BLOWER_CONTROL_MAX_SENSOR]; // Only one control board in use
 byte gpio_max_read = 15;    // MAX number of indexes the sensor GPIO function should read.  Must be 15, 31, etc.
 unsigned long gpio_last_read = 0;    // MAX number of indexes the sensor GPIO function should read.  Must be 15, 31, etc.
 uint8_t gpio_last_reading_A = 0;    // MAX number of indexes the sensor GPIO function should read.  Must be 15, 31, etc.
@@ -160,6 +161,11 @@ unsigned long lastSampleTime = millis();
 
 #ifdef BLOWER_CONTROL_WIFI
 
+const String HTML_ONLINE = "<font color=\"green\">ACTIVE</font>";
+const String HTML_ONLINE_M = "<font color=\"red\">MOTOR OFF</font>";
+const String HTML_OFFLINE = "INACTIVE";
+const String HTML_DISABLED = "<font color=\"gray\">Disabled</font>";
+
 struct dstRule StartRule = {"EDT", Second, Sun, Mar, 2, 3600};    // Daylight time = UTC/GMT -4 hours
 struct dstRule EndRule = {"EST", First, Sun, Nov, 2, 0};       // Standard time = UTC/GMT -5 hour
 
@@ -227,9 +233,6 @@ simpleDSTadjust dstAdjusted(StartRule, EndRule);
 
 //FS
 bool isFSMounted = false;
-
-
-
 #define MOTOR_STOP        false
 #define MOTOR_START       true
 #define RELAY_F1          D5         
@@ -240,5 +243,6 @@ bool isFSMounted = false;
 #define GPIO_IR           D0
 #define GPIO_B1           D8
 #define GPIO_B2           A0
+#define JSONVERSION       1
 
 #endif /* VARIABLE_H */

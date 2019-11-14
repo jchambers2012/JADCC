@@ -156,6 +156,7 @@ void setup() {
     wdt_disable();
     #ifdef BLOWERCONTROLLER_AUTO_FORMAT
       SPIFFS.format();
+      isFSMounted = SPIFFS.begin();
     #endif
     //Bypassed to prevent the system fr
     wdt_enable(WDTO_8S);
@@ -163,37 +164,7 @@ void setup() {
   ESP.wdtFeed();
   if (isFSMounted) {
     Serial.println("Mounted file system");
-    if (SPIFFS.exists("/config.json")) {
-      //file exists, reading and loading
-      DC_DBG( "reading config file\n");
-      File configFile = SPIFFS.open("/config.json", "r");
-      if (configFile) {
-        DC_DBG("opened config file\n");
-        size_t size = configFile.size();
-        // Allocate a buffer to store contents of the file.
-        std::unique_ptr<char[]> buf(new char[size]);
-        #if 0
-        configFile.readBytes(buf.get(), size);
-        DynamicJsonBuffer jsonBuffer;
-        JsonObject& json = jsonBuffer.parseObject(buf.get());
-        json.printTo(Serial);
-        if (json.success()) {
-          ESP.wdtFeed();
-          DC_DBG( "\nparsed json\n");
-
-          //strcpy(mqtt_server, json["mqtt_server"]);
-          //strcpy(mqtt_port, json["mqtt_port"]);
-          //strcpy(blynk_token, json["blynk_token"]);
-
-        } else {
-          Serial.println("failed to load json config, defaults will be used");
-        }
-        configFile.close();
-        #endif
-      }
-    } else {
-      Serial.println("config.json missing, defaults will be used");
-    }
+    loadConfigJSON();
   } else {
     Serial.println("failed to mount FS, defaults will be used");
   }
@@ -262,12 +233,12 @@ void setup() {
 
   //TEST Objects until I can get around to getting config.json working
 
-  sensors[4].enable = false;
-  sensors[3].invert = false;
-  sensors[11].f1 = false;
-  sensors[12].f2 = false;
-  sensors[13].turn_off = true;sensors[13].turn_on = false;
-  sensors[13].f1 = true;
+  //sensors[4].enable = false;
+  //sensors[3].invert = false;
+  //sensors[11].f1 = false;
+  //sensors[12].f2 = false;
+  //sensors[13].turn_off = true;sensors[13].turn_on = false;
+  //sensors[13].f1 = true;
   //master_stop = false;
 
   ESP.wdtFeed();

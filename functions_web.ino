@@ -9,36 +9,44 @@ void rootPage() {
     "<script type=\"text/javascript\">"
     "setTimeout(\"location.reload()\", 5000);"
     "</script>"
+    "<style>"
+    ".sensor {"
+    "color:gray;margin:10px;"
+    "}"
+    "</style>"
     "</head>"
     "<body>"
-    "<p></p><p style=\"padding-top:15px;text-align:center\">" AUTOCONNECT_LINK(COG_24) "</p>"
-    "<h3 align=\"center\" style=\"color:gray;margin:10px;\">Sensor: {{DateTime}}</h3>"
-    "<h3 align=\"center\" style=\"color:gray;margin:10px;\">getFreeHeapPRE: {{getFreeHeapPRE}}</h3>"
-    "<h3 align=\"center\" style=\"color:gray;margin:10px;\">getFreeHeapPOST: {{getFreeHeapPOST}}</h3>"
+    "<p></p><p style=\"padding-top:15px;text-align:center\"><a href=\"/settings\">Settings<a></p>"
+    "<h3 align=\"center\" class=\"sensor\">Sensor: {{DateTime}}</h3>"
     "{{TOP_MSQ}}"
-    "<h3 align=\"center\" style=\"color:gray;margin:10px;\">Sensor: {{s0-name}} {{s0-current}}</h3>"
-    "<h3 align=\"center\" style=\"color:gray;margin:10px;\">Sensor: {{s1-name}} {{s1-current}}</h3>"
-    "<h3 align=\"center\" style=\"color:gray;margin:10px;\">Sensor: {{s2-name}} {{s2-current}}</h3>"
-    "<h3 align=\"center\" style=\"color:gray;margin:10px;\">Sensor: {{s3-name}} {{s3-current}}</h3>"
-    "<h3 align=\"center\" style=\"color:gray;margin:10px;\">Sensor: {{s4-name}} {{s4-current}}</h3>"
-    "<h3 align=\"center\" style=\"color:gray;margin:10px;\">Sensor: {{s5-name}} {{s5-current}}</h3>"
-    "<h3 align=\"center\" style=\"color:gray;margin:10px;\">Sensor: {{s6-name}} {{s6-current}}</h3>"
-    "<h3 align=\"center\" style=\"color:gray;margin:10px;\">Sensor: {{s7-name}} {{s7-current}}</h3>"
-    "<h3 align=\"center\" style=\"color:gray;margin:10px;\">Sensor: {{s8-name}} {{s8-current}}</h3>"
-    "<h3 align=\"center\" style=\"color:gray;margin:10px;\">Sensor: {{s9-name}} {{s9-current}}</h3>"
-    "<h3 align=\"center\" style=\"color:gray;margin:10px;\">Sensor: {{s10-name}} {{s10-current}}</h3>"
-    "<h3 align=\"center\" style=\"color:gray;margin:10px;\">Sensor: {{s11-name}} {{s11-current}}</h3>"
-    "<h3 align=\"center\" style=\"color:gray;margin:10px;\">Sensor: {{s12-name}} {{s12-current}}</h3>"
-    "<h3 align=\"center\" style=\"color:gray;margin:10px;\">Sensor: {{s13-name}} {{s13-current}}</h3>"
-    "<h3 align=\"center\" style=\"color:gray;margin:10px;\">Sensor: {{s14-name}} {{s14-current}}</h3>"
-    "<h3 align=\"center\" style=\"color:gray;margin:10px;\">STOP: {{s15-name}} {{s15-current}}</h3>"
-    "<h3 align=\"center\" style=\"color:gray;margin:10px;\">Blower Error: {{master_error}}</h3>"
-    "<h3 align=\"center\" style=\"color:gray;margin:10px;\">Blower Stop: {{master_stop}}</h3>"
-    "<h3 align=\"center\" style=\"color:gray;margin:10px;\">Blower Off: {{master_blower_off}}</h3>"
-    "<h3 align=\"center\" style=\"color:gray;margin:10px;\">Blower On: {{master_blower_on}}</h3>"
-    "<h3 align=\"center\" style=\"color:gray;margin:10px;\">Blower Function 1 : {{master_f1_on}}</h3>"
-    "<h3 align=\"center\" style=\"color:gray;margin:10px;\">Blower Function 2: {{master_f2_on}}</h3>"
-    "<h3 align=\"center\" style=\"color:gray;margin:10px;\">motor_sent_state: {{motor_sent_state}}</h3>"
+    "<table align=\"center\"><tr><th>Zone 1</th><th>Zone 2</th><th>Zone 3</th></tr>"
+    "<tr><td>"
+    "<h3 align=\"center\" class=\"sensor\">{{s0-name}}: {{s0-current}}</h3>"
+    "<h3 align=\"center\" class=\"sensor\">{{s1-name}}: {{s1-current}}</h3>"
+    "<h3 align=\"center\" class=\"sensor\">{{s2-name}}: {{s2-current}}</h3>"
+    "<h3 align=\"center\" class=\"sensor\">{{s3-name}}: {{s3-current}}</h3>"
+    "<h3 align=\"center\" class=\"sensor\">{{s4-name}}: {{s4-current}}</h3>"
+    "</td><td>"
+    "<h3 align=\"center\" class=\"sensor\">{{s5-name}}: {{s5-current}}</h3>"
+    "<h3 align=\"center\" class=\"sensor\">{{s6-name}}: {{s6-current}}</h3>"
+    "<h3 align=\"center\" class=\"sensor\">{{s7-name}}: {{s7-current}}</h3>"
+    "<h3 align=\"center\" class=\"sensor\">{{s8-name}}: {{s8-current}}</h3>"
+    "<h3 align=\"center\" class=\"sensor\">{{s9-name}}: {{s9-current}}</h3>"
+    "</td><td>"
+    "<h3 align=\"center\" class=\"sensor\">{{s10-name}}: {{s10-current}}</h3>"
+    "<h3 align=\"center\" class=\"sensor\">{{s11-name}}: {{s11-current}}</h3>"
+    "<h3 align=\"center\" class=\"sensor\">{{s12-name}}: {{s12-current}}</h3>"
+    "<h3 align=\"center\" class=\"sensor\">{{s13-name}}: {{s13-current}}</h3>"
+    "<h3 align=\"center\" class=\"sensor\">{{s14-name}}: {{s14-current}}</h3>"
+    "</td></tr></table>"
+    "<h3 align=\"center\" class=\"sensor\">STOP: {{s15-current}}</h3>"
+    "<h3 align=\"center\" class=\"sensor\">Blower Error: {{master_error}}</h3>"
+    "<h3 align=\"center\" class=\"sensor\">Blower Stop: {{master_stop}}</h3>"
+    "<h3 align=\"center\" class=\"sensor\">Blower Off: {{master_blower_off}}</h3>"
+    "<h3 align=\"center\" class=\"sensor\">Blower On: {{master_blower_on}}</h3>"
+    "<h3 align=\"center\" class=\"sensor\">Blower Function 1 : {{master_f1_on}}</h3>"
+    "<h3 align=\"center\" class=\"sensor\">Blower Function 2: {{master_f2_on}}</h3>"
+    "<h3 align=\"center\" class=\"sensor\">motor_sent_state: {{motor_sent_state}}</h3>"
     "</body>"
     "</html>";
   if (master_error == true)
@@ -60,27 +68,26 @@ void rootPage() {
 
   if (MCP_online_20 == false)
   {
-    content.replace("{{TOP_MSQ}}", String("<h1  align=\"center\" style=\"color:red;margin:20px;\"><strong>SYSTEM ERROR</strong> MCP23017 is offline at address 0x21 a power cycle might fix the issue <strong>System Disabled</strong></h1>{{TOP_MSQ2}}"));
+    content.replace("{{TOP_MSQ}}", String("<h1  align=\"center\" style=\"color:red;margin:20px;\"><strong>SYSTEM ERROR</strong> MCP23017 is HTML_OFFLINE at address 0x21 a power cycle might fix the issue <strong>System Disabled</strong></h1>{{TOP_MSQ2}}"));
   }
 #if defined(BLOWER_CONTROL_BOARDS) && BLOWER_CONTROL_BOARDS >= 2
   if (MCP_online_21 == false && MCP_enabled_21 == true)
   {
-    content.replace("{{TOP_MSQ}}", String("<h1  align=\"center\" style=\"color:red;margin:20px;\"><strong>SYSTEM ERROR</strong> MCP23017 is offline at address 0x22  a power cycle might fix the issue <strong>System Disabled</strong></h1>{{TOP_MSQ2}}"));
+    content.replace("{{TOP_MSQ}}", String("<h1  align=\"center\" style=\"color:red;margin:20px;\"><strong>SYSTEM ERROR</strong> MCP23017 is HTML_OFFLINE at address 0x22  a power cycle might fix the issue <strong>System Disabled</strong></h1>{{TOP_MSQ2}}"));
   }
 #endif
 #if defined(BLOWER_CONTROL_BOARDS) && BLOWER_CONTROL_BOARDS >= 3
   if (MCP_online_22 == false && MCP_enabled_22 == true)
   {
-    content.replace("{{TOP_MSQ}}", String("<h1  align=\"center\" style=\"color:red;margin:20px;\"><strong>SYSTEM ERROR</strong> MCP23017 is offline at address 0x23  a power cycle might fix the issue <strong>System Disabled</strong></h1>{{TOP_MSQ2}}"));
+    content.replace("{{TOP_MSQ}}", String("<h1  align=\"center\" style=\"color:red;margin:20px;\"><strong>SYSTEM ERROR</strong> MCP23017 is HTML_OFFLINE at address 0x23  a power cycle might fix the issue <strong>System Disabled</strong></h1>{{TOP_MSQ2}}"));
   }
 #endif
 #if defined(BLOWER_CONTROL_BOARDS) && BLOWER_CONTROL_BOARDS >= 4
   if (MCP_online_23 == false && MCP_enabled_23 == true)
   {
-    content.replace("{{TOP_MSQ}}", String("<h1  align=\"center\" style=\"color:red;margin:20px;\"><strong>SYSTEM ERROR</strong> MCP23017 is offline at address 0x24  a power cycle might fix the issue <strong>System Disabled</strong></h1>{{TOP_MSQ2}}"));
+    content.replace("{{TOP_MSQ}}", String("<h1  align=\"center\" style=\"color:red;margin:20px;\"><strong>SYSTEM ERROR</strong> MCP23017 is HTML_OFFLINE at address 0x24  a power cycle might fix the issue <strong>System Disabled</strong></h1>{{TOP_MSQ2}}"));
   }
 #endif
-  content.replace("{{getFreeHeapPRE}}", String(ESP.getFreeHeap())); //kill off the {{TOP_MSQ}}
   content.replace("{{TOP_MSQ2}}", String("")); //kill off the {{TOP_MSQ}}
   content.replace("{{master_error}}", String(master_error));
   content.replace("{{master_stop}}", String(master_stop));
@@ -89,84 +96,328 @@ void rootPage() {
   content.replace("{{master_f1_on}}", String(master_f1_on));
   content.replace("{{master_f2_on}}", String(master_f2_on));
   content.replace("{{motor_sent_state}}", String(motor_sent_state));
-  content.replace("{{s0-name}}", String(sensors[0].c_name));
-  content.replace("{{s0-current}}", String(sensors[0].current));
-  content.replace("{{s1-name}}", String(sensors[1].c_name));
-  content.replace("{{s1-current}}", String(sensors[1].current));
-  content.replace("{{s2-name}}", String(sensors[2].c_name));
-  content.replace("{{s2-current}}", String(sensors[2].current));
-  content.replace("{{s3-name}}", String(sensors[3].c_name));
-  content.replace("{{s3-current}}", String(sensors[3].current));
-  content.replace("{{s4-name}}", String(sensors[4].c_name));
-  content.replace("{{s4-current}}", String(sensors[4].current));
-  content.replace("{{s5-name}}", String(sensors[5].c_name));
-  content.replace("{{s5-current}}", String(sensors[5].current));
-  content.replace("{{s6-name}}", String(sensors[6].c_name));
-  content.replace("{{s6-current}}", String(sensors[6].current));
-  content.replace("{{s7-name}}", String(sensors[7].c_name));
-  content.replace("{{s7-current}}", String(sensors[7].current));
-  content.replace("{{s8-name}}", String(sensors[8].c_name));
-  content.replace("{{s8-current}}", String(sensors[8].current));
-  content.replace("{{s9-name}}", String(sensors[9].c_name));
-  content.replace("{{s9-current}}", String(sensors[9].current));
-  content.replace("{{s10-name}}", String(sensors[10].c_name));
-  content.replace("{{s10-current}}", String(sensors[10].current));
-  content.replace("{{s11-name}}", String(sensors[11].c_name));
-  content.replace("{{s11-current}}", String(sensors[11].current));
-  content.replace("{{s12-name}}", String(sensors[12].c_name));
-  content.replace("{{s12-current}}", String(sensors[12].current));
-  content.replace("{{s13-name}}", String(sensors[13].c_name));
-  content.replace("{{s13-current}}", String(sensors[13].current));
-  content.replace("{{s14-name}}", String(sensors[14].c_name));
-  content.replace("{{s14-current}}", String(sensors[14].current));
-  content.replace("{{s15-name}}", String(sensors[15].c_name));
-  content.replace("{{s15-current}}", String(sensors[15].current));
-  static const char *wd[7] = { "Sun", "Mon", "Tue", "Wed", "Thr", "Fri", "Sat" };
-  struct tm *tm;
-  time_t  t;
-  char    dateTime[26];
 
-  t = time(NULL);
-  tm = localtime(&t);
-  sprintf(dateTime, "%04d/%02d/%02d(%s) %02d:%02d:%02d.",
-          tm->tm_year + 1900, tm->tm_mon + 1, tm->tm_mday,
-          wd[tm->tm_wday],
-          tm->tm_hour, tm->tm_min, tm->tm_sec);
-  content.replace("{{DateTime}}", String(dateTime));
-  content.replace("{{getFreeHeapPOST}}", String(ESP.getFreeHeap())); //kill off the {{TOP_MSQ}}
+  content.replace("{{s0-name}}", String(sensors[0].c_name));
+  if (sensors[0].confirmed) {
+    if (sensors[0].turn_off)
+    {
+      content.replace("{{s0-current}}", HTML_ONLINE_M);
+    } else {
+      content.replace("{{s0-current}}", HTML_ONLINE);
+    }
+  } else {
+    if (sensors[0].enable)
+    {
+      content.replace("{{s0-current}}", HTML_OFFLINE);
+    } else {
+      content.replace("{{s0-current}}", HTML_DISABLED);
+    }
+  }
+  content.replace("{{s1-name}}", String(sensors[1].c_name));
+  if (sensors[1].confirmed) {
+    if (sensors[1].turn_off)
+    {
+      content.replace("{{s1-current}}", HTML_ONLINE_M);
+    } else {
+      content.replace("{{s1-current}}", HTML_ONLINE);
+    }
+  } else {
+    if (sensors[1].enable)
+    {
+      content.replace("{{s1-current}}", HTML_OFFLINE);
+    } else {
+      content.replace("{{s1-current}}", HTML_DISABLED);
+    }
+  }
+  content.replace("{{s2-name}}", String(sensors[2].c_name));
+  if (sensors[2].confirmed) {
+    if (sensors[2].turn_off)
+    {
+      content.replace("{{s2-current}}", HTML_ONLINE_M);
+    } else {
+      content.replace("{{s2-current}}", HTML_ONLINE);
+    }
+  } else {
+    if (sensors[2].enable)
+    {
+      content.replace("{{s2-current}}", HTML_OFFLINE);
+    } else {
+      content.replace("{{s2-current}}", HTML_DISABLED);
+    }
+  }
+  content.replace("{{s3-name}}", String(sensors[3].c_name));
+  if (sensors[3].confirmed) {
+    if (sensors[3].turn_off)
+    {
+      content.replace("{{s3-current}}", HTML_ONLINE_M);
+    } else {
+      content.replace("{{s3-current}}", HTML_ONLINE);
+    }
+  } else {
+    if (sensors[3].enable)
+    {
+      content.replace("{{s3-current}}", HTML_OFFLINE);
+    } else {
+      content.replace("{{s3-current}}", HTML_DISABLED);
+    }
+  }
+  content.replace("{{s4-name}}", String(sensors[4].c_name));
+  if (sensors[4].confirmed) {
+    if (sensors[4].turn_off)
+    {
+      content.replace("{{s4-current}}", HTML_ONLINE_M);
+    } else {
+      content.replace("{{s4-current}}", HTML_ONLINE);
+    }
+  } else {
+    if (sensors[4].enable)
+    {
+      content.replace("{{s4-current}}", HTML_OFFLINE);
+    } else {
+      content.replace("{{s4-current}}", HTML_DISABLED);
+    }
+  }
+  content.replace("{{s5-name}}", String(sensors[5].c_name));
+  if (sensors[5].confirmed) {
+    if (sensors[5].turn_off)
+    {
+      content.replace("{{s5-current}}", HTML_ONLINE_M);
+    } else {
+      content.replace("{{s5-current}}", HTML_ONLINE);
+    }
+  } else {
+    if (sensors[5].enable)
+    {
+      content.replace("{{s5-current}}", HTML_OFFLINE);
+    } else {
+      content.replace("{{s5-current}}", HTML_DISABLED);
+    }
+  }
+  content.replace("{{s6-name}}", String(sensors[6].c_name));
+  if (sensors[6].confirmed) {
+    if (sensors[6].turn_off)
+    {
+      content.replace("{{s6-current}}", HTML_ONLINE_M);
+    } else {
+      content.replace("{{s6-current}}", HTML_ONLINE);
+    }
+  } else {
+    if (sensors[6].enable)
+    {
+      content.replace("{{s6-current}}", HTML_OFFLINE);
+    } else {
+      content.replace("{{s6-current}}", HTML_DISABLED);
+    }
+  }
+  content.replace("{{s7-name}}", String(sensors[7].c_name));
+  if (sensors[7].confirmed) {
+    if (sensors[7].turn_off)
+    {
+      content.replace("{{s7-current}}", HTML_ONLINE_M);
+    } else {
+      content.replace("{{s7-current}}", HTML_ONLINE);
+    }
+  } else {
+    if (sensors[7].enable)
+    {
+      content.replace("{{s7-current}}", HTML_OFFLINE);
+    } else {
+      content.replace("{{s7-current}}", HTML_DISABLED);
+    }
+  }
+  content.replace("{{s8-name}}", String(sensors[8].c_name));
+  if (sensors[8].confirmed) {
+    if (sensors[8].turn_off)
+    {
+      content.replace("{{s8-current}}", HTML_ONLINE_M);
+    } else {
+      content.replace("{{s8-current}}", HTML_ONLINE);
+    }
+  } else {
+    if (sensors[8].enable)
+    {
+      content.replace("{{s8-current}}", HTML_OFFLINE);
+    } else {
+      content.replace("{{s8-current}}", HTML_DISABLED);
+    }
+  }
+  content.replace("{{s9-name}}", String(sensors[9].c_name));
+  if (sensors[9].confirmed) {
+    if (sensors[9].turn_off)
+    {
+      content.replace("{{s9-current}}", HTML_ONLINE_M);
+    } else {
+      content.replace("{{s9-current}}", HTML_ONLINE);
+    }
+  } else {
+    if (sensors[9].enable)
+    {
+      content.replace("{{s9-current}}", HTML_OFFLINE);
+    } else {
+      content.replace("{{s9-current}}", HTML_DISABLED);
+    }
+  }
+  content.replace("{{s10-name}}", String(sensors[10].c_name));
+  if (sensors[10].confirmed) {
+    if (sensors[10].turn_off)
+    {
+      content.replace("{{s10-current}}", HTML_ONLINE_M);
+    } else {
+      content.replace("{{s10-current}}", HTML_ONLINE);
+    }
+  } else {
+    if (sensors[10].enable)
+    {
+      content.replace("{{s10-current}}", HTML_OFFLINE);
+    } else {
+      content.replace("{{s10-current}}", HTML_DISABLED);
+    }
+  }
+  content.replace("{{s11-name}}", String(sensors[11].c_name));
+  if (sensors[11].confirmed) {
+    if (sensors[11].turn_off)
+    {
+      content.replace("{{s11-current}}", HTML_ONLINE_M);
+    } else {
+      content.replace("{{s11-current}}", HTML_ONLINE);
+    };
+  } else {
+    if (sensors[11].enable)
+    {
+      content.replace("{{s11-current}}", HTML_OFFLINE);
+    } else {
+      content.replace("{{s11-current}}", HTML_DISABLED);
+    }
+  }
+  content.replace("{{s12-name}}", String(sensors[12].c_name));
+  if (sensors[12].confirmed) {
+    if (sensors[12].turn_off)
+    {
+      content.replace("{{s12-current}}", HTML_ONLINE_M);
+    } else {
+      content.replace("{{s12-current}}", HTML_ONLINE);
+    }
+  } else {
+    if (sensors[12].enable)
+    {
+      content.replace("{{s12-current}}", HTML_OFFLINE);
+    } else {
+      content.replace("{{s12-current}}", HTML_DISABLED);
+    }
+  }
+  content.replace("{{s13-name}}", String(sensors[13].c_name));
+  if (sensors[13].confirmed) {
+    if (sensors[13].turn_off)
+    {
+      content.replace("{{s13-current}}", HTML_ONLINE_M);
+    } else {
+      content.replace("{{s13-current}}", HTML_ONLINE);
+    }
+  } else {
+    if (sensors[13].enable)
+    {
+      content.replace("{{s13-current}}", HTML_OFFLINE);
+    } else {
+      content.replace("{{s13-current}}", HTML_DISABLED);
+    }
+  }
+  content.replace("{{s14-name}}", String(sensors[14].c_name));
+  if (sensors[14].confirmed) {
+    if (sensors[14].turn_off)
+    {
+      content.replace("{{s14-current}}", HTML_ONLINE_M);
+    } else {
+      content.replace("{{s14-current}}", HTML_ONLINE);
+    }
+  } else {
+    if (sensors[14].enable)
+    {
+      content.replace("{{s14-current}}", HTML_OFFLINE);
+    } else {
+      content.replace("{{s14-current}}", HTML_DISABLED);
+    }
+  }
+  content.replace("{{s15-name}}", String(sensors[15].c_name));
+  if (sensors[15].confirmed) {
+    if (sensors[15].turn_off)
+    {
+      content.replace("{{s15-current}}", HTML_ONLINE_M);
+    } else {
+      content.replace("{{s15-current}}", HTML_ONLINE);
+    }
+  } else {
+    if (sensors[15].enable)
+    {
+      content.replace("{{s15-current}}", HTML_OFFLINE);
+    } else {
+      content.replace("{{s15-current}}", HTML_DISABLED);
+    }
+  }
+  content.replace("{{DateTime}}", String(returnDateTime()));
   server.send(200, "text/html", content);
 }
+void saveConfig() {
+  if (createConfigJSON())
+  {
+    server.send(200, "text/html", "");
+  }
+}
+void settingsMotor() {
 
-void zonePageSubmit() {
-  int offset=0;
-  String message  =
+  server.send(200, "text/html", "");
+}
+void restoreConfig() {
+
+  server.send(200, "text/html", "");
+}
+void settingsPage() {
+  String  content =
     "<html>"
     "<head>"
     "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">"
     "</head>"
     "<body>"
-    "<pre>";
-  for (int i = 0; i < server.args(); i++) {
-    message += "Arg #" + (String)i + " – > ";
-    message += server.argName(i) + ": ";
-    message += server.arg(i) + "\n";
-  }
-  message += "<\pre>"
-             "</body>"
-             "</html>";
-  if(server.arg("ID") == ""){
+    "<ul>"
+    "<li><a href=\"/\">Status Page</a></li>"
+    "<li><a href=\"/_ac\">ESP8266 Settings (WiFI)</a></li>"
+    "<li><a href=\"/motor\">Edit Motor Control</a></li>"
+    "<li><a href=\"/zone1\">Edit Zone 1 Sensors 1-5</a></li>"
+    "<li><a href=\"/zone2\">Edit Zone 2 Sensors 1-5</a></li>"
+    "<li><a href=\"/zone3\">Edit Zone 3 Sensors 1-5</a></li>"
+    "<li><a href=\"/saveConfig\">Commit the config to Flash</a></li>"
+    "<li><a href=\"/config.json\">Backup Config</a></li>"
+    "<li><a href=\"/restore\">Restore Backed-up Config</a></li>"
+    "<li><a href=\"/restore\">Delete Config File and Reboot (WiFi will be uneffected)</a></li>"
+    "</ul>"
+    "</body>"
+    "</html>";
+
+  server.send(200, "text/html", content);
+}
+
+void zonePageSubmit() {
+  int offset = 0;
+  String message  =
+    "<html>"
+    "<head>"
+    "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">"
+    "</head>"
+    "<body><a href=\"/\"> Go Home to confime settings</a> or <a href=\"/\"> Commit settings to flash storage</a>";
+  "</body>"
+  "</html>";
+  if (server.arg("ID") == "") {
     server.send(500, "text/text", "Missing ID");
     return;
-  }else if(server.arg("ID") =="1")
+  } else if (server.arg("ID") == "1")
   {
     offset = 0;
-  }else if(server.arg("ID") =="2")
+  } else if (server.arg("ID") == "2")
   {
     offset = 5;
-  }else if(server.arg("ID") =="3")
+  } else if (server.arg("ID") == "3")
   {
     offset = 10;
-  }else{
+  } else {
     //Error Overflow attack?
     server.send(500, "text/text", "Bad ID");
     return;
@@ -325,6 +576,8 @@ void zonePageSubmit() {
 
   server.send(200, "text/html", message);
 }
+
+
 void zonePage() {
   int offset = 0;
   String content  =
@@ -349,9 +602,6 @@ void zonePage() {
     "</style>"
     "</head>"
     "<body>"
-    "<h1>{{protal}}</h1>"
-    "<h1>{{getFreeHeap}}</h1>"
-    "<p></p><p style=\"padding-top:15px;text-align:center\">" AUTOCONNECT_LINK(COG_24) "</p>"
     "<form action=\"/zonePageSubmit\" method=\"post\">"
     "<table><tr><th>ID</th><th>Enabled</th><th>Invert</th><th>Stop Motor</th><th>Start Motor</th><th>Function 1</th><th>Function 2</th><th>Sensor Name</th></tr>"
     "<tr><td>Zone {ID} Sensor 1</td>"
@@ -361,7 +611,7 @@ void zonePage() {
     "<td><input type=\"checkbox\" name=\"1-start\" value=\"1-start\" {1-start} id=\"1-start\"></td>"
     "<td><input type=\"checkbox\" name=\"1-f1\" value=\"1-f1\" {1-f1} id=\"1-f1\"></td>"
     "<td><input type=\"checkbox\" name=\"1-f2\" value=\"1-f1\" {1-f2} id=\"1-f2\"></td>"
-    "<td><input type=\"text\" id=\"1-name\" name=\"1-name\" value=\"{1-name}\" placeholder=\"This area accepts hostname patterns\"></td>"
+    "<td><input type=\"text\" id=\"1-name\" name=\"1-name\" value=\"{1-name}\"  maxlength=\"20\" placeholder=\"This area accepts hostname patterns\"></td>"
     "</tr>"
     "<tr><td>Zone {ID} Sensor 2</td>"
     "<td><input type=\"checkbox\" name=\"2-e\" value=\"2-e\" {2-e} id=\"2-e\"></td>"
@@ -370,7 +620,7 @@ void zonePage() {
     "<td><input type=\"checkbox\" name=\"2-start\" value=\"2-start\" {2-start} id=\"2-start\"></td>"
     "<td><input type=\"checkbox\" name=\"2-f1\" value=\"2-f1\" {2-f1} id=\"2-f1\"></td>"
     "<td><input type=\"checkbox\" name=\"2-f2\" value=\"2-f1\" {2-f2} id=\"2-f2\"></td>"
-    "<td><input type=\"text\" id=\"2-name\" name=\"2-name\" value=\"{2-name}\" placeholder=\"This area accepts hostname patterns\"></td>"
+    "<td><input type=\"text\" id=\"2-name\" name=\"2-name\" value=\"{2-name}\"  maxlength=\"20\" placeholder=\"This area accepts hostname patterns\"></td>"
     "</tr>"
     "<tr><td>Zone {ID} Sensor 3</td>"
     "<td><input type=\"checkbox\" name=\"3-e\" value=\"3-e\" {3-e} id=\"3-e\"></td>"
@@ -379,7 +629,7 @@ void zonePage() {
     "<td><input type=\"checkbox\" name=\"3-start\" value=\"3-start\" {3-start} id=\"3-start\"></td>"
     "<td><input type=\"checkbox\" name=\"3-f1\" value=\"3-f1\" {3-f1} id=\"3-f1\"></td>"
     "<td><input type=\"checkbox\" name=\"3-f2\" value=\"3-f1\" {3-f2} id=\"3-f2\"></td>"
-    "<td><input type=\"text\" id=\"3-name\" name=\"3-name\" value=\"{3-name}\" placeholder=\"This area accepts hostname patterns\"></td>"
+    "<td><input type=\"text\" id=\"3-name\" name=\"3-name\" value=\"{3-name}\"  maxlength=\"20\" placeholder=\"This area accepts hostname patterns\"></td>"
     "</tr>"
     "<tr><td>Zone {ID} Sensor 4</td>"
     "<td><input type=\"checkbox\" name=\"4-e\" value=\"4-e\" {4-e} id=\"4-e\"></td>"
@@ -388,7 +638,7 @@ void zonePage() {
     "<td><input type=\"checkbox\" name=\"4-start\" value=\"4-start\" {4-start} id=\"4-start\"></td>"
     "<td><input type=\"checkbox\" name=\"4-f1\" value=\"4-f1\" {4-f1} id=\"4-f1\"></td>"
     "<td><input type=\"checkbox\" name=\"4-f2\" value=\"4-f1\" {4-f2} id=\"4-f2\"></td>"
-    "<td><input type=\"text\" id=\"4-name\" name=\"4-name\" value=\"{4-name}\" placeholder=\"This area accepts hostname patterns\"></td>"
+    "<td><input type=\"text\" id=\"4-name\" name=\"4-name\" value=\"{4-name}\"  maxlength=\"20\" placeholder=\"This area accepts hostname patterns\"></td>"
     "</tr>"
     "<tr><td>Zone {ID} Sensor 5</td>"
     "<td><input type=\"checkbox\" name=\"5-e\" value=\"5-e\" {5-e} id=\"5-e\"></td>"
@@ -397,7 +647,7 @@ void zonePage() {
     "<td><input type=\"checkbox\" name=\"5-start\" value=\"5-start\" {5-start} id=\"5-start\"></td>"
     "<td><input type=\"checkbox\" name=\"5-f1\" value=\"5-f1\" {5-f1} id=\"5-f1\"></td>"
     "<td><input type=\"checkbox\" name=\"5-f2\" value=\"5-f1\" {5-f2} id=\"5-f2\"></td>"
-    "<td><input type=\"text\" id=\"5-name\" name=\"5-name\" value=\"{5-name}\" placeholder=\"This area accepts hostname patterns\"></td>"
+    "<td><input type=\"text\" id=\"5-name\" name=\"5-name\" value=\"{5-name}\"  maxlength=\"20\" placeholder=\"This area accepts hostname patterns\"></td>"
     "</tr>"
     "</table>"
     " <input type=\"hidden\" name=\"ID\" value=\"{ID}\" id=\"ID\">"
@@ -517,9 +767,22 @@ void zonePage() {
     content.replace("{5-f2}", "checked");
   }
   content.replace("{5-name}", String(sensors[4 + offset].c_name));
-  content.replace("{{getFreeHeap}}", String(ESP.getFreeHeap()));
   server.send(200, "text/html", content);
 }
+
+void downloadConfig()
+{
+  if (SPIFFS.exists("/config.json") ) {
+    File file = SPIFFS.open("/config.json", "r");
+    server.streamFile(file, F("text/json"));
+    file.close();
+    return;
+  } else {
+    server.send(500, "text/html", F("<html><head></head><body><h1>CONFIG.JSON Not found, default options are being used.</h1><p>Please see manual on how to setup the system</p></body></html>"));
+    return;
+  }
+}
+
 void saveTZ() {
   // Retrieve the value of AutoConnectElement with arg function of WebServer class.
   // Values are accessible with the element name.

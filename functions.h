@@ -19,8 +19,16 @@ void load_force_stop();
 //WEB SERVER FUNCTIONS
 void rootPage();
 void zonePage();
+void downloadConfig();
+void settingsPage();
+void saveConfig();
+bool createConfigJSON();
+int loadConfigJSON();
+void restoreConfig();
+void settingsMotor();
 void zonePageSubmit();
 void saveTZ();
+String returnDateTime();
 String formatBytes(size_t bytes);
 String getContentType(String filename);
 bool handleFileRead(String path);
