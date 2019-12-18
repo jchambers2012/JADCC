@@ -9,7 +9,7 @@ bool MCP_debug = false;
 
 
 
-#define BLOWER_VERSION "0.18 BETA"
+#define BLOWER_VERSION "0.19 BETA"
 
 Scheduler ts, cts; 
 
